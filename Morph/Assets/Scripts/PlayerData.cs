@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum State{
     Solid,
@@ -34,5 +35,12 @@ public class PlayerData : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.R)){
+            string curScene = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(curScene);
+        }
+    }
 
 }
