@@ -26,11 +26,16 @@ public class PlayerController : MonoBehaviour
     // component
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private Collider2D _col;
+    [SerializeField] private SpriteRenderer _sr;
 
     [SerializeField] private float distanceToSurface;
     [SerializeField] private float inputX;
     [SerializeField] private float inputY;
     [SerializeField] private int localDirection; // left or right
+
+    // sprite
+    public Sprite solidSprite;
+    public Sprite liquidSprite; 
     
     private void Awake() {
         center = transform.Find("center");
@@ -42,6 +47,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _rb.isKinematic = true;
         _col = GetComponent<Collider2D>();
+        _sr = GetComponent<SpriteRenderer>();
 
         // bool
         isHorizontal = true; 
@@ -62,11 +68,13 @@ public class PlayerController : MonoBehaviour
         switch(PlayerData.Pd.state){
             case State.Solid:
             {
+                _sr.sprite = solidSprite;
                 solidControl();
                 break;
             }
             case State.Liquid:
             {
+                _sr.sprite = liquidSprite;
                 liquidControl();
                 break;
             }
@@ -80,7 +88,9 @@ public class PlayerController : MonoBehaviour
     }
 
     void solidControl(){
+        // initiate
         Debug.Log("solid control");
+
         _rb.isKinematic = false;
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
@@ -96,6 +106,7 @@ public class PlayerController : MonoBehaviour
     }
 
     void liquidControl(){
+        //initiate
         _rb.isKinematic = true;
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
