@@ -13,7 +13,9 @@ public class PlayerController : MonoBehaviour
 
     // bool
     [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isAttached;
     [SerializeField] private bool isWallHit;
+    [SerializeField] private bool isCornerMet;
     [SerializeField] private bool isRotating;
     [SerializeField] private bool isHorizontal;
     // layer
@@ -28,7 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float distanceToSurface;
     [SerializeField] private float inputX;
     [SerializeField] private float inputY;
-    [SerializeField] private int localDirection;
+    [SerializeField] private int localDirection; // left or right
     
     private void Awake() {
         center = transform.Find("center");
@@ -100,23 +102,25 @@ public class PlayerController : MonoBehaviour
         inputY = Input.GetAxisRaw("Vertical");
 
         changeDirection();
-        Vector2 hitPos = checkWall();
-        if(hitPos != Vector2.zero && !isRotating){
+        Vector2 wallHitPos = checkWall();
+        Vector2 cornerHitPos = checkCorner();
+        // wall rotate
+        if(wallHitPos != Vector2.zero && !isRotating){
             isRotating = true;
-            Debug.Log(hitPos);
+            Debug.Log(wallHitPos);
             Debug.Log(transform.right);
-            Vector2 endCenter = hitPos - (Vector2)transform.right * distanceToSurface;
+            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface + wallHitPos;
             Debug.Log(endCenter);
             _col.enabled = false;
             transform
             .DOMove(
                 endCenter,
-                3f
+                0.2f
             );
             transform
             .DOLocalRotate(
-                new Vector3(0, 0, 90),
-                3f
+                new Vector3(0, 0, 90 * localDirection),
+                0.2f
             )
             .SetRelative()
             .OnComplete(()=>{
@@ -125,12 +129,45 @@ public class PlayerController : MonoBehaviour
                 isHorizontal = !isHorizontal;
             });
         }
+        // corner rotate
+        if(cornerHitPos != Vector2.zero & !isRotating){
+            isRotating = true;
+            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface + cornerHitPos;
+            Debug.Log(endCenter);
+            _col.enabled = false;
+            transform
+            .DOMove(
+                endCenter,
+                0.2f
+            );
+            transform
+            .DOLocalRotate(
+                new Vector3(0, 0, -90 * localDirection),
+                0.2f
+            )
+            .SetRelative()
+            .OnComplete(()=>{
+                isRotating = false;
+                _col.enabled = true;
+                isHorizontal = !isHorizontal;
+            });
+        }
+
+
+
         // movement
         if(!isRotating){
-            if(isHorizontal){
+            if(isHorizontal && (feet.position.y < center.position.y)){
                 transform.Translate(inputX * 0.05f, 0, 0);
-            }else{
+            }
+            else if(isHorizontal && (feet.position.y > center.position.y)){
+                transform.Translate(-inputX * 0.05f, 0, 0);
+            }
+            else if(!isHorizontal && (feet.position.x > center.position.x)){
                 transform.Translate(inputY * 0.05f, 0, 0);
+            }
+            else if (!isHorizontal && (feet.position.x < center.position.x)){
+                transform.Translate(-inputY * 0.05f, 0, 0);
             }
         }
 
@@ -141,18 +178,31 @@ public class PlayerController : MonoBehaviour
     }
 
     void changeDirection(){
+        // static
         if(inputX == 0 && isHorizontal) localDirection = (int)transform.localScale.x;
         else if(inputY == 0 && !isHorizontal) localDirection = (int)transform.localScale.x;
-        else if(inputX > float.Epsilon && isHorizontal) localDirection = 1;
-        else if(inputX < float.Epsilon && isHorizontal) localDirection = -1;
-        else if(inputY > float.Epsilon && !isHorizontal) localDirection = 1;
-        else if(inputY < float.Epsilon && !isHorizontal) localDirection = -1;
+        // horizontal
+        else if(inputX > float.Epsilon && isHorizontal && (feet.position.y < center.position.y)) localDirection = 1;
+        else if(inputX > float.Epsilon && isHorizontal && (feet.position.y > center.position.y)) localDirection = -1;
+        else if(inputX < float.Epsilon && isHorizontal && (feet.position.y < center.position.y)) localDirection = -1;
+        else if(inputX < float.Epsilon && isHorizontal && (feet.position.y > center.position.y)) localDirection = 1;
+        // vertical
+        else if(inputY > float.Epsilon && !isHorizontal && (feet.position.x > center.position.x)) localDirection = 1;
+        else if(inputY > float.Epsilon && !isHorizontal && (feet.position.x < center.position.x)) localDirection = -1;
+        else if(inputY < float.Epsilon && !isHorizontal && (feet.position.x > center.position.x)) localDirection = -1;
+        else if(inputY < float.Epsilon && !isHorizontal && (feet.position.x < center.position.x)) localDirection = 1;
         transform.localScale = new Vector3(localDirection, 1, 1);
     }
 
     bool checkGrounded(){
         isGrounded = Physics2D.Raycast(feet.position, -transform.up, 0.2f, groundLayer);
         return isGrounded;
+    }
+
+    bool checkAttached(){
+        int combinedMask = wallLayer | ceilingLayer | groundLayer;
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.2f, combinedMask);
+        return isAttached;
     }
 
     Vector2 checkWall(){
@@ -165,7 +215,16 @@ public class PlayerController : MonoBehaviour
         return (isWallHit)? hit.point : Vector2.zero;
     }
 
-    bool checkVoid(){
-        return false;
+    Vector2 checkCorner(){
+        if(isRotating) return Vector2.zero;
+        int combinedMask = wallLayer | ceilingLayer | groundLayer;
+        RaycastHit2D hit = new RaycastHit2D();
+        if(!checkAttached()){
+            hit = Physics2D.Raycast(feet.position, (-transform.right * localDirection - transform.up).normalized, 1f, combinedMask);
+            Debug.DrawLine(feet.position, feet.position + (-transform.right - transform.up).normalized, Color.red);
+            Debug.Log($"corner: {((hit.collider == null) ? false : true)}");
+            isCornerMet = (hit.collider == null) ? false : true;
+        }
+        return (isCornerMet) ? hit.point : Vector2.zero; 
     }
 }
