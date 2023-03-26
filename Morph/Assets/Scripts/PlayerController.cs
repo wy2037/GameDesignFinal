@@ -90,8 +90,8 @@ public class PlayerController : MonoBehaviour
     void solidControl(){
         // initiate
         Debug.Log("solid control");
-
         _rb.isKinematic = false;
+        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         // change direction
@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour
     void liquidControl(){
         //initiate
         _rb.isKinematic = true;
+        _rb.constraints = RigidbodyConstraints2D.None;
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         inputY = Input.GetAxisRaw("Vertical");
@@ -212,7 +213,7 @@ public class PlayerController : MonoBehaviour
 
     bool checkAttached(){
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
-        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.2f, combinedMask);
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.1f, combinedMask);
         return isAttached;
     }
 
@@ -220,7 +221,7 @@ public class PlayerController : MonoBehaviour
         if(isRotating) return Vector2.zero;
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
         
-        RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right, 0.2f, combinedMask);
+        RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right, 0.1f, combinedMask);
         isWallHit = (hit.collider == null) ? false:true;
         //Debug.DrawRay(transform.position, transform.right * Mathf.Infinity, Color.red);
         return (isWallHit)? hit.point : Vector2.zero;
@@ -231,7 +232,7 @@ public class PlayerController : MonoBehaviour
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
         RaycastHit2D hit = new RaycastHit2D();
         if(!checkAttached()){
-            hit = Physics2D.Raycast(feet.position, (-transform.right * localDirection - transform.up).normalized, 1f, combinedMask);
+            hit = Physics2D.Raycast(feet.position, (-transform.right * localDirection - transform.up).normalized, 0.1f, combinedMask);
             Debug.DrawLine(feet.position, feet.position + (-transform.right - transform.up).normalized, Color.red);
             Debug.Log($"corner: {((hit.collider == null) ? false : true)}");
             isCornerMet = (hit.collider == null) ? false : true;
