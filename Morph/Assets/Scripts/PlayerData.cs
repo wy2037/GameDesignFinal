@@ -19,7 +19,7 @@ public class PlayerData : MonoBehaviour
     public float speed = 5f;
     public float jumpForce = 3f;
     public State state;
-    public int gravity;
+    public float gravityScale = 1.2f;
 
 
 

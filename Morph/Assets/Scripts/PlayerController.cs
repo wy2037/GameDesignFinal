@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     // sprite
     public Sprite solidSprite;
     public Sprite liquidSprite; 
+    public Sprite gasSprite;
     
     private void Awake() {
         center = transform.Find("center");
@@ -80,6 +81,7 @@ public class PlayerController : MonoBehaviour
             }
             case State.Gas:
             {
+                _sr.sprite = gasSprite;
                 gasControl();
                 break;
             }
@@ -92,6 +94,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("solid control");
         _rb.isKinematic = false;
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        _rb.gravityScale = PlayerData.Pd.gravityScale;
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         // change direction
@@ -186,7 +189,16 @@ public class PlayerController : MonoBehaviour
     }
 
     void gasControl(){
+        // initialize
+        _rb.gravityScale = -PlayerData.Pd.gravityScale;
+        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
+        // get input
+        inputX = Input.GetAxisRaw("Horizontal");
+        // change direction
+        changeDirection();
+        // set speed
+        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
     }
 
     void changeDirection(){
