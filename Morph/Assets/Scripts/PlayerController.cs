@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
     public Sprite solidSprite;
     public Sprite liquidSprite; 
     public Sprite gasSprite;
+
+    // temperature changing points
+    [SerializeField] private int solidToLiquid;
+    [SerializeField] private int liquidToGas;
     
     private void Awake() {
         center = transform.Find("center");
@@ -55,14 +59,13 @@ public class PlayerController : MonoBehaviour
         isHorizontal = true; 
     }
     private void Update() {
-        // temperate way of switching state
-        if(Input.GetKeyDown(KeyCode.Z)){
+        if(PlayerData.Pd.temperature <= solidToLiquid){
             PlayerData.Pd.state = State.Solid;
         }
-        else if (Input.GetKeyDown(KeyCode.X)){
+        else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
             PlayerData.Pd.state = State.Liquid;
         }
-        else if (Input.GetKeyDown(KeyCode.C)){
+        else if (PlayerData.Pd.temperature > liquidToGas){
             PlayerData.Pd.state = State.Gas;
         }
         else if(Input.GetKeyDown(KeyCode.V)){
