@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour
         isHorizontal = true; 
     }
     private void Update() {
+
+
         if(PlayerData.Pd.temperature <= solidToLiquid){
             PlayerData.Pd.state = State.Solid;
         }
@@ -72,6 +74,19 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(liquidDrop2());
         }
 
+        // temperate way of switching state
+        if(Input.GetKeyDown(KeyCode.Z)){
+            PlayerData.Pd.state = State.Solid;
+        }
+        else if (Input.GetKeyDown(KeyCode.X)){
+            PlayerData.Pd.state = State.Liquid;
+        }
+        else if (Input.GetKeyDown(KeyCode.C)){
+            PlayerData.Pd.state = State.Gas;
+        }
+        else if(Input.GetKeyDown(KeyCode.V)){
+            StartCoroutine(liquidDrop2());
+        }
 
         switch(PlayerData.Pd.state){
             case State.Solid:
