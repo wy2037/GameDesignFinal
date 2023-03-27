@@ -16,6 +16,7 @@ public class WindField : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && (PlayerData.Pd.state == State.Gas || PlayerData.Pd.state == State.Liquid)) {
             //collision.gameObject.GetComponent<Rigidbody2D>().AddForce(windDirection * windForce);
             _playerRb.AddForce(windDirection * windForce);
+            //_playerRb.velocity += (windDirection * windForce);
             //_player.Translate(windDirection * windForce);
 
             // call player funtion to cool down
@@ -24,7 +25,7 @@ public class WindField : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other) {
         if(other.gameObject.CompareTag("Player") && PlayerData.Pd.state == State.Liquid){
-            _player.GetComponent<PlayerController>().liquidDrop();
+            StartCoroutine( _player.GetComponent<PlayerController>().liquidDrop2());
         } 
     }
 }
