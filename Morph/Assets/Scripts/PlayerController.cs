@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
     // component
     [SerializeField] private Rigidbody2D _rb;
-    [SerializeField] private Collider2D _col;
+    [SerializeField] private BoxCollider2D _col;
     [SerializeField] private SpriteRenderer _sr;
 
     [SerializeField] private float distanceToSurface;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
         _rb = GetComponent<Rigidbody2D>();
         _rb.isKinematic = true;
-        _col = GetComponent<Collider2D>();
+        _col = GetComponent<BoxCollider2D>();
         _sr = GetComponent<SpriteRenderer>();
 
         // bool
@@ -63,6 +63,9 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.C)){
             PlayerData.Pd.state = State.Gas;
+        }
+        else if(Input.GetKeyDown(KeyCode.V)){
+            liquidDrop();
         }
 
 
@@ -89,11 +92,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    
     void solidControl(){
         // initiate
         Debug.Log("solid control");
+        _col.offset = new Vector2(0,0.01f);
+        _col.size = new Vector2(0.64f,0.66f);
+
+
+
         _rb.isKinematic = false;
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        transform.rotation = Quaternion.identity;
+        isHorizontal = true;
         _rb.gravityScale = PlayerData.Pd.gravityScale;
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
@@ -110,8 +122,13 @@ public class PlayerController : MonoBehaviour
 
     void liquidControl(){
         //initiate
-        _rb.isKinematic = true;
+        _rb.velocity = Vector2.zero;
+        _rb.isKinematic = false;
+        _rb.gravityScale = 0;
         _rb.constraints = RigidbodyConstraints2D.None;
+
+        _col.offset = new Vector2(0,-0.115f);
+        _col.size = new Vector2(0.64f,0.41f);
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         inputY = Input.GetAxisRaw("Vertical");
@@ -173,16 +190,20 @@ public class PlayerController : MonoBehaviour
         // movement
         if(!isRotating){
             if(isHorizontal && (feet.position.y < center.position.y)){
-                transform.Translate(inputX * 0.05f, 0, 0);
+                //transform.Translate(inputX * 0.05f, 0, 0);
+                _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, 0);
             }
             else if(isHorizontal && (feet.position.y > center.position.y)){
-                transform.Translate(-inputX * 0.05f, 0, 0);
+                //transform.Translate(-inputX * 0.05f, 0, 0);
+                _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, 0);
             }
             else if(!isHorizontal && (feet.position.x > center.position.x)){
-                transform.Translate(inputY * 0.05f, 0, 0);
+                //transform.Translate(inputY * 0.05f, 0, 0);
+                _rb.velocity = new Vector2(0, inputY * PlayerData.Pd.speed);
             }
             else if (!isHorizontal && (feet.position.x < center.position.x)){
-                transform.Translate(-inputY * 0.05f, 0, 0);
+                //transform.Translate(-inputY * 0.05f, 0, 0);
+                _rb.velocity = new Vector2(0, inputY * PlayerData.Pd.speed);
             }
         }
 
@@ -190,8 +211,15 @@ public class PlayerController : MonoBehaviour
 
     void gasControl(){
         // initialize
+        _rb.isKinematic = false;
         _rb.gravityScale = -PlayerData.Pd.gravityScale;
+        transform.rotation = Quaternion.identity;
+        isHorizontal = true;
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        _col.offset = new Vector2(0, 0.09f);
+        _col.size = new Vector2(0.64f, 0.46f);
+        
 
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
@@ -233,7 +261,7 @@ public class PlayerController : MonoBehaviour
         if(isRotating) return Vector2.zero;
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
         
-        RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right, 0.1f, combinedMask);
+        RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right * localDirection, 0.2f, combinedMask);
         isWallHit = (hit.collider == null) ? false:true;
         //Debug.DrawRay(transform.position, transform.right * Mathf.Infinity, Color.red);
         return (isWallHit)? hit.point : Vector2.zero;
@@ -244,11 +272,57 @@ public class PlayerController : MonoBehaviour
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
         RaycastHit2D hit = new RaycastHit2D();
         if(!checkAttached()){
-            hit = Physics2D.Raycast(feet.position, (-transform.right * localDirection - transform.up).normalized, 0.1f, combinedMask);
-            Debug.DrawLine(feet.position, feet.position + (-transform.right - transform.up).normalized, Color.red);
+            hit = Physics2D.Raycast(
+                feet.position + transform.right * localDirection * 0.32f, 
+                (-transform.right * localDirection - transform.up).normalized, 
+                0.6f, 
+                combinedMask
+                );
+            
             Debug.Log($"corner: {((hit.collider == null) ? false : true)}");
             isCornerMet = (hit.collider == null) ? false : true;
         }
         return (isCornerMet) ? hit.point : Vector2.zero; 
+    }
+
+
+    public void liquidDrop(){
+        if(PlayerData.Pd.state == State.Liquid){
+            isRotating = true;
+            Vector2 dropPos = Vector2.zero;
+            
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, groundLayer);
+            dropPos = hit.point;
+            dropPos.y += distanceToSurface;
+            Debug.Log($"drop pos{dropPos}");
+
+            transform
+            .DOLocalRotate(
+                Vector3.zero,
+                0.3f
+            );
+            //.SetRelative();
+            
+            transform
+            .DOMove(
+                dropPos,
+                1f
+            )
+            .SetEase(Ease.InQuad)
+            .OnUpdate(()=>{
+                inputX = Input.GetAxisRaw("Horizontal");
+                transform.Translate(inputX * 0.05f, 0, 0);
+            })
+            .OnComplete(()=>{
+                isRotating = false;
+            });
+            
+        }
+    }
+
+    private void OnDrawGizmos() {
+    
+        Debug.DrawRay(feet.position + transform.right * localDirection * 0.2f, (-transform.right * localDirection - transform.up).normalized * 0.4f, Color.red);
+        Debug.DrawRay(right.position, transform.right * localDirection * 0.2f);
     }
 }
