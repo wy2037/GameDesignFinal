@@ -36,10 +36,6 @@ public class PlayerController : MonoBehaviour
     // sprite
     public Sprite solidSprite;
     public Sprite liquidSprite; 
-
-    // temperature threshold
-    [SerializeField] private float freezingPoint; // temperature between liquid/solid
-    [SerializeField] private float boilingPoint; // temperature between gas/liquid
     
     private void Awake() {
         center = transform.Find("center");
@@ -57,13 +53,14 @@ public class PlayerController : MonoBehaviour
         isHorizontal = true; 
     }
     private void Update() {
-        if(PlayerData.Pd.temperature <= freezingPoint){
+        // temperate way of switching state
+        if(Input.GetKeyDown(KeyCode.Z)){
             PlayerData.Pd.state = State.Solid;
         }
-        else if (PlayerData.Pd.temperature > freezingPoint && PlayerData.Pd.temperature <= boilingPoint){
+        else if (Input.GetKeyDown(KeyCode.X)){
             PlayerData.Pd.state = State.Liquid;
         }
-        else if (PlayerData.Pd.temperature > boilingPoint){
+        else if (Input.GetKeyDown(KeyCode.C)){
             PlayerData.Pd.state = State.Gas;
         }
 
@@ -92,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     void solidControl(){
         // initiate
-        //Debug.Log("solid control");
+        Debug.Log("solid control");
         _rb.isKinematic = false;
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         // get input
