@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     // bool
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool isAttached;
+    [SerializeField] private bool isFalling;
     [SerializeField] private bool isWallHit;
     [SerializeField] private bool isCornerMet;
     [SerializeField] private bool isRotating;
@@ -65,7 +66,7 @@ public class PlayerController : MonoBehaviour
             PlayerData.Pd.state = State.Gas;
         }
         else if(Input.GetKeyDown(KeyCode.V)){
-            liquidDrop();
+            StartCoroutine(liquidDrop2());
         }
 
 
@@ -124,7 +125,9 @@ public class PlayerController : MonoBehaviour
         //initiate
         _rb.velocity = Vector2.zero;
         _rb.isKinematic = false;
-        _rb.gravityScale = 0;
+        if(!isFalling) _rb.gravityScale = 0;
+        // if(isAttached) _rb.gravityScale = 0;
+        // else _rb.gravityScale = PlayerData.Pd.gravityScale;
         _rb.constraints = RigidbodyConstraints2D.None;
 
         _col.offset = new Vector2(0,-0.115f);
@@ -137,7 +140,7 @@ public class PlayerController : MonoBehaviour
         Vector2 wallHitPos = checkWall();
         Vector2 cornerHitPos = checkCorner();
         // wall rotate
-        if(wallHitPos != Vector2.zero && !isRotating){
+        if(wallHitPos != Vector2.zero && !isRotating && !isFalling){
             isRotating = true;
             Debug.Log(wallHitPos);
             Debug.Log(transform.right);
@@ -162,7 +165,7 @@ public class PlayerController : MonoBehaviour
             });
         }
         // corner rotate
-        if(cornerHitPos != Vector2.zero & !isRotating){
+        if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
             isRotating = true;
             Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface + cornerHitPos;
             Debug.Log(endCenter);
@@ -191,11 +194,11 @@ public class PlayerController : MonoBehaviour
         if(!isRotating){
             if(isHorizontal && (feet.position.y < center.position.y)){
                 //transform.Translate(inputX * 0.05f, 0, 0);
-                _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, 0);
+                _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
             }
             else if(isHorizontal && (feet.position.y > center.position.y)){
                 //transform.Translate(-inputX * 0.05f, 0, 0);
-                _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, 0);
+                _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
             }
             else if(!isHorizontal && (feet.position.x > center.position.x)){
                 //transform.Translate(inputY * 0.05f, 0, 0);
@@ -247,13 +250,13 @@ public class PlayerController : MonoBehaviour
     }
 
     bool checkGrounded(){
-        isGrounded = Physics2D.Raycast(feet.position, -transform.up, 0.2f, groundLayer);
+        isGrounded = Physics2D.Raycast(feet.position, -transform.up, 0.05f, groundLayer);
         return isGrounded;
     }
 
     bool checkAttached(){
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
-        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.1f, combinedMask);
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.05f, combinedMask);
         return isAttached;
     }
 
@@ -268,7 +271,7 @@ public class PlayerController : MonoBehaviour
     }
 
     Vector2 checkCorner(){
-        if(isRotating) return Vector2.zero;
+        if(isRotating || _rb.gravityScale != 0) return Vector2.zero;
         int combinedMask = wallLayer | ceilingLayer | groundLayer;
         RaycastHit2D hit = new RaycastHit2D();
         if(!checkAttached()){
@@ -320,9 +323,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos() {
-    
-        Debug.DrawRay(feet.position + transform.right * localDirection * 0.2f, (-transform.right * localDirection - transform.up).normalized * 0.4f, Color.red);
-        Debug.DrawRay(right.position, transform.right * localDirection * 0.2f);
+    public IEnumerator liquidDrop2(){
+        if(!isFalling){
+            isFalling = true;
+            Debug.Log($"fall {PlayerData.Pd.gravityScale}");
+            _rb.gravityScale = PlayerData.Pd.gravityScale;
+            Debug.Log($"fall {_rb.gravityScale}");
+            yield return new WaitUntil(()=>(checkGrounded()));
+            _rb.gravityScale = 0f;
+            isFalling = false;
+            Debug.Log("fall finished");
+        }
     }
+    // private void OnDrawGizmos() {
+    
+    //     Debug.DrawRay(feet.position + transform.right * localDirection * 0.2f, (-transform.right * localDirection - transform.up).normalized * 0.4f, Color.red);
+    //     Debug.DrawRay(right.position, transform.right * localDirection * 0.2f);
+    // }
 }
