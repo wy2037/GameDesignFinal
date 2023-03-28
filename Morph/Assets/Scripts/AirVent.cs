@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AirVent : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class AirVent : MonoBehaviour
         if (collision.gameObject.name == "Player" && PlayerData.Pd.state == State.Gas) {
             Debug.Log("Gas player hit air vent!");
             // Call function in player to damage
+            string sceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(sceneName);
         }
     }
 }
