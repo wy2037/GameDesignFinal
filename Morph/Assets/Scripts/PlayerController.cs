@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
 
     // for testing
-    bool stateFlag = true;
+    public bool stateFlag = true;
     // children
     private Transform head;
     private Transform feet;
@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int liquidToGas;
     
     private void Awake() {
+        // get children
         head = transform.Find("head");
         center = transform.Find("center");
         feet = transform.Find("feet");
@@ -53,15 +54,18 @@ public class PlayerController : MonoBehaviour
         distanceToSurface = Vector2.Distance(center.position, feet.position);
 
         _rb = GetComponent<Rigidbody2D>();
-        _rb.isKinematic = true;
         _col = GetComponent<BoxCollider2D>();
         _sr = GetComponent<SpriteRenderer>();
 
         // bool
+        _rb.isKinematic = false;
         isHorizontal = true; 
         stateFlag = true;
     }
     private void Update() {
+        if(Input.GetKeyDown(KeyCode.F)){
+            stateFlag = !stateFlag;
+        }
 
         if(stateFlag){
             // temperate way of switching state
@@ -78,13 +82,13 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(liquidDrop2());
             }
         }else{
-            if(PlayerData.Pd.temperature <= solidToLiquid){
+            if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
                 solidInit();
             }
-            else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
+            else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
                 liquidInit();
             }
-            else if (PlayerData.Pd.temperature > liquidToGas){
+            else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
                 gasInit();
             }
             else if(Input.GetKeyDown(KeyCode.V)){
@@ -95,19 +99,16 @@ public class PlayerController : MonoBehaviour
         switch(PlayerData.Pd.state){
             case State.Solid:
             {
-                _sr.sprite = solidSprite;
                 solidControl();
                 break;
             }
             case State.Liquid:
             {
-                _sr.sprite = liquidSprite;
                 liquidControl();
                 break;
             }
             case State.Gas:
             {
-                _sr.sprite = gasSprite;
                 gasControl();
                 break;
             }
@@ -119,6 +120,7 @@ public class PlayerController : MonoBehaviour
     void solidInit(){
         this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
         PlayerData.Pd.state = State.Solid;
+        _sr.sprite = solidSprite;
 
         _col.offset = new Vector2(0,0.01f);
         _col.size = new Vector2(0.64f,0.66f);
@@ -133,6 +135,7 @@ public class PlayerController : MonoBehaviour
     void liquidInit(){
         this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
         PlayerData.Pd.state = State.Liquid;
+        _sr.sprite = liquidSprite;
         
         _col.offset = new Vector2(0,-0.115f);
         _col.size = new Vector2(0.64f,0.41f);
@@ -144,6 +147,7 @@ public class PlayerController : MonoBehaviour
     void gasInit(){
         this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
         PlayerData.Pd.state = State.Gas;
+        _sr.sprite = gasSprite;
 
         _col.offset = new Vector2(0, 0.09f);
         _col.size = new Vector2(0.64f, 0.46f);
