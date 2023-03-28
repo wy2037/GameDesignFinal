@@ -14,10 +14,7 @@ public class WindField : MonoBehaviour
     }
     public void OnTriggerStay2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Player") && (PlayerData.Pd.state == State.Gas || PlayerData.Pd.state == State.Liquid)) {
-            //collision.gameObject.GetComponent<Rigidbody2D>().AddForce(windDirection * windForce);
             _playerRb.AddForce(windDirection * windForce);
-            //_playerRb.velocity += (windDirection * windForce);
-            //_player.Translate(windDirection * windForce);
 
             // call player funtion to cool down
         }

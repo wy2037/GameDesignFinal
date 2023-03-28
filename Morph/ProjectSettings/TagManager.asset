@@ -11,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - Wall
-  - Ceiling
   - Ground
-  - 
-  - 
-  - 
+  - PlayerS
+  - PlayerL
+  - PlayerG
+  - Spike
+  - AirVent
   - 
   - 
   - 

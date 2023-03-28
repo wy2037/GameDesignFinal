@@ -9,13 +9,14 @@ public class PlayerController : MonoBehaviour
     // for testing
     bool stateFlag = true;
     // children
+    private Transform head;
     private Transform feet;
     private Transform right;
     private Transform center;
 
     // bool
-    [SerializeField] private bool isGrounded;
     [SerializeField] private bool isAttached;
+    [SerializeField] private bool isCeiling;
     [SerializeField] private bool isFalling;
     [SerializeField] private bool isWallHit;
     [SerializeField] private bool isCornerMet;
@@ -23,8 +24,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isHorizontal;
     // layer
     public LayerMask groundLayer;
-    public LayerMask wallLayer;
-    public LayerMask ceilingLayer;
 
     // component
     [SerializeField] private Rigidbody2D _rb;
@@ -46,6 +45,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int liquidToGas;
     
     private void Awake() {
+        head = transform.Find("head");
         center = transform.Find("center");
         feet = transform.Find("feet");
         right = transform.Find("right");
@@ -66,34 +66,31 @@ public class PlayerController : MonoBehaviour
         if(stateFlag){
             // temperate way of switching state
             if(Input.GetKeyDown(KeyCode.Z)){
-                PlayerData.Pd.state = State.Solid;
+                solidInit();
             }
             else if (Input.GetKeyDown(KeyCode.X)){
-                PlayerData.Pd.state = State.Liquid;
+                liquidInit();
             }
             else if (Input.GetKeyDown(KeyCode.C)){
-                PlayerData.Pd.state = State.Gas;
+                gasInit();
             }
             else if(Input.GetKeyDown(KeyCode.V)){
                 StartCoroutine(liquidDrop2());
             }
         }else{
             if(PlayerData.Pd.temperature <= solidToLiquid){
-                PlayerData.Pd.state = State.Solid;
+                solidInit();
             }
             else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
-                PlayerData.Pd.state = State.Liquid;
+                liquidInit();
             }
             else if (PlayerData.Pd.temperature > liquidToGas){
-                PlayerData.Pd.state = State.Gas;
+                gasInit();
             }
             else if(Input.GetKeyDown(KeyCode.V)){
                 StartCoroutine(liquidDrop2());
             }
         }
-
-
-
 
         switch(PlayerData.Pd.state){
             case State.Solid:
@@ -119,44 +116,66 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    
-    void solidControl(){
-        // initiate
-        //Debug.Log("solid control");
+    void solidInit(){
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
+        PlayerData.Pd.state = State.Solid;
+
         _col.offset = new Vector2(0,0.01f);
         _col.size = new Vector2(0.64f,0.66f);
-
-
-
+        
         _rb.isKinematic = false;
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         transform.rotation = Quaternion.identity;
         isHorizontal = true;
         _rb.gravityScale = PlayerData.Pd.gravityScale;
+
+    }
+    void liquidInit(){
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
+        PlayerData.Pd.state = State.Liquid;
+        
+        _col.offset = new Vector2(0,-0.115f);
+        _col.size = new Vector2(0.64f,0.41f);
+
+        _rb.isKinematic = false;
+        _rb.constraints = RigidbodyConstraints2D.None;
+        StartCoroutine(liquidDrop2());
+    }
+    void gasInit(){
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
+        PlayerData.Pd.state = State.Gas;
+
+        _col.offset = new Vector2(0, 0.09f);
+        _col.size = new Vector2(0.64f, 0.46f);
+        
+        _rb.isKinematic = false;
+        _rb.gravityScale = -PlayerData.Pd.gravityScale;
+        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        isHorizontal = true;
+
+    }
+    void solidControl(){
+        // initiate
+        //Debug.Log("solid control");
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         // change direction
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
-        if(checkGrounded() && Input.GetKeyDown(KeyCode.Space)){
+        if(checkAttached() && Input.GetKeyDown(KeyCode.Space)){
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
         }
 
     }
-
     void liquidControl(){
         //initiate
-        _rb.isKinematic = false;
         if(!isFalling){
             _rb.gravityScale = 0;
             _rb.velocity = Vector2.zero;
         }
-        _rb.constraints = RigidbodyConstraints2D.None;
 
-        _col.offset = new Vector2(0,-0.115f);
-        _col.size = new Vector2(0.64f,0.41f);
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         inputY = Input.GetAxisRaw("Vertical");
@@ -164,6 +183,7 @@ public class PlayerController : MonoBehaviour
         changeDirection();
         Vector2 wallHitPos = checkWall();
         Vector2 cornerHitPos = checkCorner();
+        checkAttached();
         // wall rotate
         if(wallHitPos != Vector2.zero && !isRotating && !isFalling){
             isRotating = true;
@@ -216,8 +236,6 @@ public class PlayerController : MonoBehaviour
             });
         }
 
-
-
         // movement
         if(!isRotating){
             if(isHorizontal && (feet.position.y < center.position.y)){
@@ -240,17 +258,10 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
     void gasControl(){
         // initialize
-        _rb.isKinematic = false;
-        _rb.gravityScale = -PlayerData.Pd.gravityScale;
         transform.rotation = Quaternion.identity;
-        isHorizontal = true;
-        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-        _col.offset = new Vector2(0, 0.09f);
-        _col.size = new Vector2(0.64f, 0.46f);
-        
 
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
@@ -258,6 +269,9 @@ public class PlayerController : MonoBehaviour
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
+        if(checkCeiling() && Input.GetKeyDown(KeyCode.Space)){
+            _rb.velocity += new Vector2(0, -PlayerData.Pd.jumpForce);
+        }
     }
 
     void changeDirection(){
@@ -277,22 +291,21 @@ public class PlayerController : MonoBehaviour
         transform.localScale = new Vector3(localDirection, 1, 1);
     }
 
-    bool checkGrounded(){
-        isGrounded = Physics2D.Raycast(feet.position, -transform.up, 0.05f, groundLayer);
-        return isGrounded;
+    bool checkAttached(){
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.05f, groundLayer);
+        return isAttached;
     }
 
-    bool checkAttached(){
-        int combinedMask = wallLayer | ceilingLayer | groundLayer;
-        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.05f, combinedMask);
-        return isAttached;
+    bool checkCeiling(){
+        isCeiling = Physics2D.Raycast(head.position, transform.up, 0.05f, groundLayer);
+        return isCeiling;
     }
 
     Vector2 checkWall(){
         if(isRotating) return Vector2.zero;
-        int combinedMask = wallLayer | ceilingLayer | groundLayer;
+        //int combinedMask = wallLayer | ceilingLayer | groundLayer;
         
-        RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right * localDirection, 0.2f, combinedMask);
+        RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right * localDirection, 0.2f, groundLayer);
         isWallHit = (hit.collider == null) ? false:true;
         //Debug.DrawRay(transform.position, transform.right * Mathf.Infinity, Color.red);
         return (isWallHit)? hit.point : Vector2.zero;
@@ -300,15 +313,15 @@ public class PlayerController : MonoBehaviour
 
     Vector2 checkCorner(){
         if(isCornerMet || isRotating || _rb.gravityScale != 0) return Vector2.zero;
-        int combinedMask = wallLayer | ceilingLayer | groundLayer;
+        //int combinedMask = wallLayer | ceilingLayer | groundLayer;
         RaycastHit2D hit = new RaycastHit2D();
         if(!checkAttached()){
             hit = Physics2D.Raycast(
                 feet.position + transform.right * localDirection * 0.32f, 
                 (-transform.right * localDirection - transform.up).normalized, 
                 0.6f, 
-                combinedMask
-                );
+                groundLayer
+            );
             
             //Debug.Log($"corner: {((hit.collider == null) ? false : true)}");
             isCornerMet = (hit.collider == null) ? false : true;
@@ -354,18 +367,14 @@ public class PlayerController : MonoBehaviour
     public IEnumerator liquidDrop2(){
         if(!isFalling){
             isFalling = true;
-            //Debug.Log($"fall {PlayerData.Pd.gravityScale}");
+            transform.rotation = Quaternion.identity;
+            isHorizontal = true;
             _rb.gravityScale = PlayerData.Pd.gravityScale;
-            //Debug.Log($"fall {_rb.gravityScale}");
-            yield return new WaitUntil(()=>(checkGrounded()));
+            yield return new WaitUntil(()=>(checkAttached()));
             _rb.gravityScale = 0f;
             isFalling = false;
-            //Debug.Log("fall finished");
+            
         }
     }
-    // private void OnDrawGizmos() {
-    
-    //     Debug.DrawRay(feet.position + transform.right * localDirection * 0.2f, (-transform.right * localDirection - transform.up).normalized * 0.4f, Color.red);
-    //     Debug.DrawRay(right.position, transform.right * localDirection * 0.2f);
-    // }
+
 }
