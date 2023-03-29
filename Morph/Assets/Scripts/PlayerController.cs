@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour
         _sr.sprite = gasSprite;
 
         _col.offset = new Vector2(0, 0.09f);
-        _col.size = new Vector2(0.64f, 0.46f);
+        _col.size = new Vector2(0.6f, 0.46f);
         
         _rb.isKinematic = false;
         _rb.gravityScale = -PlayerData.Pd.gravityScale;
@@ -192,6 +192,7 @@ public class PlayerController : MonoBehaviour
     void liquidControl(){
         //initiate
         if(isRotating) return;
+        if(Input.GetKeyDown(KeyCode.Space)) StartCoroutine(liquidDrop2());
         if(!isFalling){
             _rb.gravityScale = 0;
             _rb.velocity = Vector2.zero;
@@ -206,7 +207,7 @@ public class PlayerController : MonoBehaviour
         Vector2 cornerHitPos = checkCorner();
         checkAttached();
         // wall rotate
-        if(wallHitPos != Vector2.zero && !isRotating && !isFalling){
+        if(wallHitPos != Vector2.zero && !isRotating){
             isRotating = true;
             isHorizontal = !isHorizontal;
             Debug.Log("#1");
