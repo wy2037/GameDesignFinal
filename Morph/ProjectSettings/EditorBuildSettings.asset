@@ -6,12 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/ZoneTest.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
-    path: Assets/Scenes/HomePage.unity
-    guid: b62a8148e7bc443378d8bced5c20de11
-  - enabled: 1
     path: Assets/Scenes/CharlesTest.unity
     guid: b79fe024975b9264eb57f8e312472828
+  - enabled: 1
+    path: Assets/Scenes/Levels/Tutorial.unity
+    guid: 3df8ccbebb7a84169910f76acd0ce58b
   m_configObjects: {}

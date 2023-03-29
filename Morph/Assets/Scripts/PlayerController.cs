@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
         // bool
         _rb.isKinematic = false;
         isHorizontal = true; 
-        stateFlag = true;
+        stateFlag = false;
 
 
         
