@@ -61,6 +61,13 @@ public class PlayerController : MonoBehaviour
         _rb.isKinematic = false;
         isHorizontal = true; 
         stateFlag = true;
+
+
+        
+    }
+
+    private void Start() {
+        solidInit();
     }
     private void Update() {
         if(Input.GetKeyDown(KeyCode.F)){
@@ -114,12 +121,21 @@ public class PlayerController : MonoBehaviour
             }
             
         }
+
+        // debug
+        checkAttached();
+        checkCeiling();
+        checkCorner();
+        Debug.DrawRay(feet.position + transform.right * localDirection * 0.18f, 
+            (-transform.right * localDirection - transform.up).normalized * 0.4f,
+            Color.green
+            );
     }
 
 
     void solidInit(){
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
         PlayerData.Pd.state = State.Solid;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
         _sr.sprite = solidSprite;
 
         _col.offset = new Vector2(0,0.01f);
@@ -133,20 +149,20 @@ public class PlayerController : MonoBehaviour
 
     }
     void liquidInit(){
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
         PlayerData.Pd.state = State.Liquid;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
         _sr.sprite = liquidSprite;
         
         _col.offset = new Vector2(0,-0.115f);
         _col.size = new Vector2(0.64f,0.41f);
 
         _rb.isKinematic = false;
-        _rb.constraints = RigidbodyConstraints2D.None;
+        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         StartCoroutine(liquidDrop2());
     }
     void gasInit(){
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
         PlayerData.Pd.state = State.Gas;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
         _sr.sprite = gasSprite;
 
         _col.offset = new Vector2(0, 0.09f);
@@ -175,6 +191,7 @@ public class PlayerController : MonoBehaviour
     }
     void liquidControl(){
         //initiate
+        if(isRotating) return;
         if(!isFalling){
             _rb.gravityScale = 0;
             _rb.velocity = Vector2.zero;
@@ -191,6 +208,7 @@ public class PlayerController : MonoBehaviour
         // wall rotate
         if(wallHitPos != Vector2.zero && !isRotating && !isFalling){
             isRotating = true;
+            isHorizontal = !isHorizontal;
             Debug.Log("#1");
             // Debug.Log(wallHitPos);
             // Debug.Log(transform.right);
@@ -212,31 +230,43 @@ public class PlayerController : MonoBehaviour
                 isRotating = false;
                 isWallHit = false;
                 _col.enabled = true;
-                isHorizontal = !isHorizontal;
+                
             });
         }
         // corner rotate
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
             isRotating = true;
-            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface + cornerHitPos;
+            isHorizontal = !isHorizontal;
+            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface  * 1.05f + cornerHitPos;
             
             _col.enabled = false;
-            transform
-            .DOMove(
-                endCenter,
-                0.2f
-            );
-            transform
-            .DOLocalRotate(
-                new Vector3(0, 0, -90 * localDirection),
-                0.2f
-            )
-            .SetRelative()
+
+            Sequence sq = DOTween.Sequence();
+
+            sq
+            .SetId("corner rotate")
+            .OnStart(()=>{
+                transform
+                .DOMove(
+                    endCenter,
+                    0.2f
+                );
+                transform
+                .DOLocalRotate(
+                    new Vector3(0, 0, -90 * localDirection),
+                    0.2f
+                )
+                .SetRelative()
+                .OnComplete(()=>{
+                    checkAttached();
+                    isRotating = false;
+                    isCornerMet = false;
+                    _col.enabled = true;
+                });
+            })
+            .AppendInterval(0.3f)
             .OnComplete(()=>{
-                isRotating = false;
-                isCornerMet = false;
-                _col.enabled = true;
-                isHorizontal = !isHorizontal;
+                
             });
         }
 
@@ -296,7 +326,7 @@ public class PlayerController : MonoBehaviour
     }
 
     bool checkAttached(){
-        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.05f, groundLayer);
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.1f, groundLayer);
         return isAttached;
     }
 
@@ -321,9 +351,9 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D hit = new RaycastHit2D();
         if(!checkAttached()){
             hit = Physics2D.Raycast(
-                feet.position + transform.right * localDirection * 0.32f, 
+                feet.position + transform.right * localDirection * 0.18f, 
                 (-transform.right * localDirection - transform.up).normalized, 
-                0.6f, 
+                0.4f, 
                 groundLayer
             );
             
