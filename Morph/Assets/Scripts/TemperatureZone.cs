@@ -29,6 +29,7 @@ public class TemperatureZone : MonoBehaviour
             if (zoneType == ZoneType.Freezer && PlayerData.Pd.temperature > zoneTemperature) {
                 cooldown = maxCooldown;
                 PlayerData.Pd.temperature -= multiplier;
+                
             }
         }
     }
