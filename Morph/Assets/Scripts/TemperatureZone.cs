@@ -14,12 +14,15 @@ public class TemperatureZone : MonoBehaviour
     public ZoneType zoneType;
     [SerializeField]
     float maxCooldown, cooldown = 0;
+    [SerializeField]
+    bool inZone;
 
     void Update() {
         if (cooldown > 0) cooldown -= Time.deltaTime;
     }
 
     void OnTriggerEnter2D(Collider2D other) {
+        inZone = true;
         if (other.tag == "Player") {
             if (zoneType == ZoneType.Heater) {
                 GameFeelManager.Pm.heatUpEnter();
@@ -46,15 +49,23 @@ public class TemperatureZone : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other) {
         if (other.tag == "Player") {
+            inZone = false;
             GameFeelManager.Pm.normalEnter();
-            if (cooldown <= 0 && PlayerData.Pd.temperature < roomTemperature) {
-                cooldown = maxCooldown;
-                PlayerData.Pd.temperature += multiplier;
+            if (zoneType == ZoneType.Cooler) {
+                while (PlayerData.Pd.temperature < roomTemperature && inZone == false) {
+                    if (cooldown <= 0) {
+                        cooldown = maxCooldown;
+                        PlayerData.Pd.temperature += multiplier;
+                    }
+                }
             }
-            if (cooldown <= 0 && PlayerData.Pd.temperature > roomTemperature) {
-                cooldown = maxCooldown;
-                PlayerData.Pd.temperature -= multiplier;
-                
+            if (zoneType == ZoneType.Heater) {
+                while (PlayerData.Pd.temperature > roomTemperature && inZone == false) {
+                    if (cooldown <= 0) {
+                        cooldown = maxCooldown;
+                        PlayerData.Pd.temperature -= multiplier;
+                    }
+                }
             }
         }
     }
