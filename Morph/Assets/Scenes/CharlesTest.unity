@@ -469,6 +469,8 @@ MonoBehaviour:
   solidToLiquid: 0
   liquidToGas: 100
   rotateThreshold: 1.6
+  afkCooldown: 10
+  curAfkCooldown: 0
 --- !u!95 &310124652
 Animator:
   serializedVersion: 5
@@ -788,6 +790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: 150
+  roomTemperature: 0
   multiplier: 5
   zoneType: 0
   maxCooldown: 0.25
@@ -917,6 +920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: 150
+  roomTemperature: 0
   multiplier: 5
   zoneType: 0
   maxCooldown: 0.25
@@ -4978,6 +4982,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: -50
+  roomTemperature: 0
   multiplier: 5
   zoneType: 1
   maxCooldown: 0.25
@@ -11442,6 +11447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: -50
+  roomTemperature: 0
   multiplier: 5
   zoneType: 1
   maxCooldown: 0.25
@@ -11670,6 +11676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: 150
+  roomTemperature: 0
   multiplier: 5
   zoneType: 0
   maxCooldown: 0.25
@@ -11784,6 +11791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: -50
+  roomTemperature: 0
   multiplier: 5
   zoneType: 1
   maxCooldown: 0.25
@@ -12002,6 +12010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoneTemperature: 150
+  roomTemperature: 0
   multiplier: 5
   zoneType: 0
   maxCooldown: 0.25

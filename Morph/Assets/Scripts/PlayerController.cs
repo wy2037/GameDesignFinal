@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour
 
     // float
     public float rotateThreshold = 1.4f;
+    public float afkCooldown;
+    [SerializeField] private float curAfkCooldown;
     
     private void Awake() {
         // get children
@@ -74,6 +76,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start() {
         solidInit();
+        curAfkCooldown = afkCooldown;
     }
     private void Update() {
         if(Input.GetKeyDown(KeyCode.F)){
@@ -127,6 +130,18 @@ public class PlayerController : MonoBehaviour
             }
             
         }
+
+        // afk
+        curAfkCooldown -= Time.deltaTime;
+        if( inputX != 0 || inputY != 0 ){
+            //_ani.SetTrigger("AFK");
+            curAfkCooldown = afkCooldown;
+        }
+        if(curAfkCooldown < 0){
+            _ani.SetTrigger("AFK");
+            curAfkCooldown = afkCooldown;
+        }
+        //Debug.Log($"clip: {_ani.GetCurrentAnimatorClipInfo(0)[0]}");
 
         // debug
         checkAttached();
