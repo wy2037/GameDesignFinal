@@ -25,7 +25,7 @@ public class TemperatureZone : MonoBehaviour
                 GameFeelManager.Pm.heatUpEnter();
             }
             if (zoneType == ZoneType.Cooler) {
-                GameFeelManager.Pm.heatUpEnter();
+                GameFeelManager.Pm.coolDownEnter();
             }
         }
     }
@@ -45,13 +45,13 @@ public class TemperatureZone : MonoBehaviour
     }
 
     void OnTriggerExit2D(Collider2D other) {
-        if (other.tag == "Player" && cooldown <= 0) {
+        if (other.tag == "Player") {
             GameFeelManager.Pm.normalEnter();
-            if (PlayerData.Pd.temperature < roomTemperature) {
+            if (cooldown <= 0 && PlayerData.Pd.temperature < roomTemperature) {
                 cooldown = maxCooldown;
                 PlayerData.Pd.temperature += multiplier;
             }
-            if (PlayerData.Pd.temperature > roomTemperature) {
+            if (cooldown <= 0 && PlayerData.Pd.temperature > roomTemperature) {
                 cooldown = maxCooldown;
                 PlayerData.Pd.temperature -= multiplier;
                 
