@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum ZoneType{
-    Furnace,
-    Freezer
+    Heater,
+    Cooler
 }
 
 public class TemperatureZone : MonoBehaviour
 {
-    public int zoneTemperature;
+    public int zoneTemperature, roomTemperature;
     public int multiplier;
     public ZoneType zoneType;
     [SerializeField]
@@ -19,14 +19,39 @@ public class TemperatureZone : MonoBehaviour
         if (cooldown > 0) cooldown -= Time.deltaTime;
     }
 
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.tag == "Player") {
+            if (zoneType == ZoneType.Heater) {
+                GameFeelManager.Pm.heatUpEnter();
+            }
+            if (zoneType == ZoneType.Cooler) {
+                GameFeelManager.Pm.heatUpEnter();
+            }
+        }
+    }
+
     void OnTriggerStay2D(Collider2D other) {
-        Debug.Log("Test");
         if (other.tag == "Player" && cooldown <= 0) {
-            if (zoneType == ZoneType.Furnace && PlayerData.Pd.temperature < zoneTemperature) {
+            if (zoneType == ZoneType.Heater && PlayerData.Pd.temperature < zoneTemperature) {
                 cooldown = maxCooldown;
                 PlayerData.Pd.temperature += multiplier;
             }
-            if (zoneType == ZoneType.Freezer && PlayerData.Pd.temperature > zoneTemperature) {
+            if (zoneType == ZoneType.Cooler && PlayerData.Pd.temperature > zoneTemperature) {
+                cooldown = maxCooldown;
+                PlayerData.Pd.temperature -= multiplier;
+                
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other) {
+        if (other.tag == "Player" && cooldown <= 0) {
+            GameFeelManager.Pm.normalEnter();
+            if (PlayerData.Pd.temperature < roomTemperature) {
+                cooldown = maxCooldown;
+                PlayerData.Pd.temperature += multiplier;
+            }
+            if (PlayerData.Pd.temperature > roomTemperature) {
                 cooldown = maxCooldown;
                 PlayerData.Pd.temperature -= multiplier;
                 

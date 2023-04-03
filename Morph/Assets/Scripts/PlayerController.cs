@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private BoxCollider2D _col;
     [SerializeField] private SpriteRenderer _sr;
+    [SerializeField] private Animator _ani;
 
     [SerializeField] private float distanceToSurface;
     [SerializeField] private float inputX;
@@ -43,6 +44,10 @@ public class PlayerController : MonoBehaviour
     // temperature changing points
     [SerializeField] private int solidToLiquid;
     [SerializeField] private int liquidToGas;
+
+
+    // float
+    public float rotateThreshold = 1.4f;
     
     private void Awake() {
         // get children
@@ -56,6 +61,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
         _sr = GetComponent<SpriteRenderer>();
+        _ani = GetComponent<Animator>();
 
         // bool
         _rb.isKinematic = false;
@@ -135,10 +141,13 @@ public class PlayerController : MonoBehaviour
 
     void solidInit(){
         PlayerData.Pd.state = State.Solid;
+        _ani.SetBool("Solid", true);
+        _ani.SetBool("Gas", false);
+        _ani.SetBool("Liquid", false);
         this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
-        _sr.sprite = solidSprite;
+        //_sr.sprite = solidSprite;
 
-        _col.offset = new Vector2(0,0.01f);
+        _col.offset = new Vector2(0,-0.15f);
         _col.size = new Vector2(0.64f,0.66f);
         
         _rb.isKinematic = false;
@@ -150,10 +159,13 @@ public class PlayerController : MonoBehaviour
     }
     void liquidInit(){
         PlayerData.Pd.state = State.Liquid;
+        _ani.SetBool("Liquid", true);
+        _ani.SetBool("Solid", false);
+        _ani.SetBool("Gas", false);
         this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
-        _sr.sprite = liquidSprite;
+        //_sr.sprite = liquidSprite;
         
-        _col.offset = new Vector2(0,-0.115f);
+        _col.offset = new Vector2(0,-0.27f);
         _col.size = new Vector2(0.64f,0.41f);
 
         _rb.isKinematic = false;
@@ -162,10 +174,13 @@ public class PlayerController : MonoBehaviour
     }
     void gasInit(){
         PlayerData.Pd.state = State.Gas;
+        _ani.SetBool("Gas", true);
+        _ani.SetBool("Liquid", false);
+        _ani.SetBool("Solid", false);
         this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
-        _sr.sprite = gasSprite;
+        //_sr.sprite = gasSprite;
 
-        _col.offset = new Vector2(0, 0.09f);
+        _col.offset = new Vector2(0,-0.06f);
         _col.size = new Vector2(0.6f, 0.46f);
         
         _rb.isKinematic = false;
@@ -176,17 +191,21 @@ public class PlayerController : MonoBehaviour
     }
     void solidControl(){
         // initiate
-        //Debug.Log("solid control");
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
+        _ani.SetFloat("Speed", Mathf.Abs(inputX));
         // change direction
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
         if(checkAttached() && Input.GetKeyDown(KeyCode.Space)){
+            _ani.SetBool("Grounded", isAttached);
+            _ani.SetTrigger("Jump");
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
         }
+
+        _ani.SetBool("Grounded", isAttached);
 
     }
     void liquidControl(){
@@ -201,11 +220,14 @@ public class PlayerController : MonoBehaviour
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
         inputY = Input.GetAxisRaw("Vertical");
+        _ani.SetFloat("Speed", Mathf.Abs(inputX) + Mathf.Abs(inputY));
+
 
         changeDirection();
         Vector2 wallHitPos = checkWall();
         Vector2 cornerHitPos = checkCorner();
         checkAttached();
+        _ani.SetBool("Grounded", isAttached);
         // wall rotate
         if(wallHitPos != Vector2.zero && !isRotating){
             isRotating = true;
@@ -213,7 +235,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("#1");
             // Debug.Log(wallHitPos);
             // Debug.Log(transform.right);
-            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface + wallHitPos;
+            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface * rotateThreshold + wallHitPos;
             Debug.Log(endCenter);
             _col.enabled = false;
             transform
@@ -238,7 +260,7 @@ public class PlayerController : MonoBehaviour
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
             isRotating = true;
             isHorizontal = !isHorizontal;
-            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface  * 1.05f + cornerHitPos;
+            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface  * rotateThreshold + cornerHitPos;
             
             _col.enabled = false;
 
@@ -250,12 +272,12 @@ public class PlayerController : MonoBehaviour
                 transform
                 .DOMove(
                     endCenter,
-                    0.2f
+                    0.5f
                 );
                 transform
                 .DOLocalRotate(
                     new Vector3(0, 0, -90 * localDirection),
-                    0.2f
+                    0.5f
                 )
                 .SetRelative()
                 .OnComplete(()=>{
@@ -265,7 +287,7 @@ public class PlayerController : MonoBehaviour
                     _col.enabled = true;
                 });
             })
-            .AppendInterval(0.3f)
+            .AppendInterval(0.6f)
             .OnComplete(()=>{
                 
             });
@@ -300,13 +322,17 @@ public class PlayerController : MonoBehaviour
 
         // get input
         inputX = Input.GetAxisRaw("Horizontal");
+        _ani.SetFloat("Speed", Mathf.Abs(inputX));
         // change direction
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
         if(checkCeiling() && Input.GetKeyDown(KeyCode.Space)){
+            _ani.SetBool("Grounded", isCeiling);
+            _ani.SetTrigger("Jump");
             _rb.velocity += new Vector2(0, -PlayerData.Pd.jumpForce);
         }
+        _ani.SetBool("Grounded", isCeiling);
     }
 
     void changeDirection(){
@@ -328,11 +354,13 @@ public class PlayerController : MonoBehaviour
 
     bool checkAttached(){
         isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.1f, groundLayer);
+        //if(isAttached) _ani.ResetTrigger("Jump");
         return isAttached;
     }
 
     bool checkCeiling(){
         isCeiling = Physics2D.Raycast(head.position, transform.up, 0.05f, groundLayer);
+        //if(isAttached) _ani.ResetTrigger("Jump");
         return isCeiling;
     }
 
@@ -409,6 +437,12 @@ public class PlayerController : MonoBehaviour
             _rb.gravityScale = 0f;
             isFalling = false;
             
+        }
+    }
+
+    public IEnumerator waitForAFK(){
+        while(true){
+
         }
     }
 
