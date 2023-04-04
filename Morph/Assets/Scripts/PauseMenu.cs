@@ -44,6 +44,13 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("Sample");
     }
 
+    public void SandboxButton(){
+        SceneManager.LoadScene("CharlesTest");
+    }
+    public void TutorialButton(){
+        SceneManager.LoadScene("Tutorial");
+    }
+
     public void RestartButton(){
         SceneManager.LoadScene("CharlesTest");
     }
