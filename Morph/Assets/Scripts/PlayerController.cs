@@ -461,4 +461,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnDestroy() {
+        DOTween.KillAll();
+    }
+
 }
