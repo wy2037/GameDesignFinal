@@ -8,19 +8,19 @@ public class Thermobar : MonoBehaviour
 {
 
     public Slider slider;
-    public int temp;
+    //public int temp;
     
-    public void SetTemp(int temp){
+    public void SetTemp(float temp){
         slider.value = temp;
     }
 
     void Start(){
-        temp = PlayerData.Pd.temperature;
-        SetTemp(temp);
+        //temp = PlayerData.Pd.temperature;
+        SetTemp(PlayerData.Pd.temperature);
     }
 
     void Update(){
-        temp = PlayerData.Pd.temperature;
-        SetTemp(temp);
+        //temp = PlayerData.Pd.temperature;
+        SetTemp(PlayerData.Pd.temperature);
     }
 }

@@ -15,7 +15,7 @@ public class PlayerData : MonoBehaviour
     public static PlayerData Pd { get { return _pd; } }
 
     // 
-    public int temperature;
+    public float temperature;
     public float speed = 5f;
     public float jumpForce = 3f;
     public State state;
