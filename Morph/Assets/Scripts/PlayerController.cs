@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     // float
     public float rotateThreshold = 1.4f;
+    public float rotateDuration = 0.2f;
     public float afkCooldown;
     [SerializeField] private float curAfkCooldown;
     
@@ -247,27 +248,25 @@ public class PlayerController : MonoBehaviour
         if(wallHitPos != Vector2.zero && !isRotating){
             isRotating = true;
             isHorizontal = !isHorizontal;
-            Debug.Log("#1");
-            // Debug.Log(wallHitPos);
-            // Debug.Log(transform.right);
+
             Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface * rotateThreshold + wallHitPos;
             Debug.Log(endCenter);
-            _col.enabled = false;
+
             transform
             .DOMove(
                 endCenter,
-                0.2f
+                rotateDuration
             );
             transform
             .DOLocalRotate(
                 new Vector3(0, 0, 90 * localDirection),
-                0.2f
+                rotateDuration
             )
             .SetRelative()
             .OnComplete(()=>{
                 isRotating = false;
                 isWallHit = false;
-                _col.enabled = true;
+
                 
             });
         }
@@ -277,7 +276,7 @@ public class PlayerController : MonoBehaviour
             isHorizontal = !isHorizontal;
             Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface  * rotateThreshold + cornerHitPos;
             
-            _col.enabled = false;
+            //_col.enabled = false;
 
             Sequence sq = DOTween.Sequence();
 
@@ -287,19 +286,19 @@ public class PlayerController : MonoBehaviour
                 transform
                 .DOMove(
                     endCenter,
-                    0.5f
+                    rotateDuration
                 );
                 transform
                 .DOLocalRotate(
                     new Vector3(0, 0, -90 * localDirection),
-                    0.5f
+                    rotateDuration
                 )
                 .SetRelative()
                 .OnComplete(()=>{
                     checkAttached();
                     isRotating = false;
                     isCornerMet = false;
-                    _col.enabled = true;
+                    //_col.enabled = true;
                 });
             })
             .AppendInterval(0.6f)
