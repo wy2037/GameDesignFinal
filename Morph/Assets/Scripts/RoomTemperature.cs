@@ -8,7 +8,7 @@ public class RoomTemperature : MonoBehaviour
     public static RoomTemperature Rt { get { return _rt; } }
 
     public bool inZone = false;
-    public int roomTemperature, multiplier;
+    public float roomTemperature, multiplier;
     [SerializeField]
     float maxCooldown, cooldown;
 

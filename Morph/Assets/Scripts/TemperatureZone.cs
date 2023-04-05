@@ -9,8 +9,8 @@ public enum ZoneType{
 
 public class TemperatureZone : MonoBehaviour
 {
-    public int zoneTemperature;
-    public int multiplier;
+    public float zoneTemperature;
+    public float multiplier;
     public ZoneType zoneType;
     [SerializeField]
     float maxCooldown, cooldown = 0;
