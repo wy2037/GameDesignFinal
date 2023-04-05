@@ -29,7 +29,9 @@ public class GameFeelManager : MonoBehaviour
     public Color normalColor; 
 
     // float
-
+    [SerializeField] private float lensDistortionIntensity = 0.2f;
+    [SerializeField] private float vignetteIntensity = 0.55f;
+    [SerializeField] private float chromaticAberrationIntensity = 0.3f;
 
     private void Awake() {
         // init
@@ -71,13 +73,13 @@ public class GameFeelManager : MonoBehaviour
         DOTween.Kill("coolDownEnter");
 
         // change vignette intensity
-        DOTween.To(()=> vignette.intensity.value, x=> vignette.intensity.value = x, 0.55f, 2f)
+        DOTween.To(()=> vignette.intensity.value, x=> vignette.intensity.value = x, vignetteIntensity, 2f)
         .SetId("heatUpEnter");
         // change color
         DOTween.To(()=> vignette.color.value, x => vignette.color.value = x, heatUpColor, 2f)
         .SetId("heatUpEnter");
         // change lens distortion
-        DOTween.To(()=> lensDistortion.intensity.value, x => lensDistortion.intensity.value = x, 0.3f, 2f)
+        DOTween.To(()=> lensDistortion.intensity.value, x => lensDistortion.intensity.value = x, lensDistortionIntensity, 2f)
         .SetId("heatUpEnter");
         // change chromaticAberration
         DOTween.To(()=> chromaticAberration.intensity.value, x => chromaticAberration.intensity.value = x, 0.0f, 2f)
@@ -114,16 +116,16 @@ public class GameFeelManager : MonoBehaviour
 
 
         // change vignette intensity
-        DOTween.To(()=> vignette.intensity.value, x=> vignette.intensity.value = x, 0.55f, 2f)
+        DOTween.To(()=> vignette.intensity.value, x=> vignette.intensity.value = x, vignetteIntensity, 2f)
         .SetId("coolDownEnter");
         // change color
         DOTween.To(()=> vignette.color.value, x => vignette.color.value = x, coolDownColor, 2f)
         .SetId("coolDownEnter");
         // change lens distortion
-        DOTween.To(()=> lensDistortion.intensity.value, x => lensDistortion.intensity.value = x, -0.3f, 2f)
+        DOTween.To(()=> lensDistortion.intensity.value, x => lensDistortion.intensity.value = x, -lensDistortionIntensity, 2f)
         .SetId("coolDownEnter");
         // change chromaticAberration
-        DOTween.To(()=> chromaticAberration.intensity.value, x => chromaticAberration.intensity.value = x, 0.3f, 1f)
+        DOTween.To(()=> chromaticAberration.intensity.value, x => chromaticAberration.intensity.value = x, chromaticAberrationIntensity, 1f)
         .SetId("coolDownEnter");
         // camera shaking
         DOTween.To(()=> noise.m_AmplitudeGain, x => noise.m_AmplitudeGain = x, 0.0f, 2f)
