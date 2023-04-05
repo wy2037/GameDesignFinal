@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour
         checkCeiling();
         checkCorner();
         Debug.DrawRay(feet.position + transform.right * localDirection * 0.18f, 
-            (-transform.right * localDirection - transform.up).normalized * 0.4f,
+            (-transform.right * localDirection - transform.up).normalized * 0.35f,
             Color.green
             );
     }
@@ -250,25 +250,29 @@ public class PlayerController : MonoBehaviour
             isHorizontal = !isHorizontal;
 
             Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface * rotateThreshold + wallHitPos;
-            Debug.Log(endCenter);
 
-            transform
-            .DOMove(
-                endCenter,
-                rotateDuration
-            );
-            transform
-            .DOLocalRotate(
-                new Vector3(0, 0, 90 * localDirection),
-                rotateDuration
-            )
-            .SetRelative()
-            .OnComplete(()=>{
-                isRotating = false;
-                isWallHit = false;
+            Debug.Log(endCenter);
+            transform.position = endCenter;
+            transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
+            isRotating = false;
+            isWallHit = false;
+            // transform
+            // .DOMove(
+            //     endCenter,
+            //     rotateDuration
+            // );
+            // transform
+            // .DOLocalRotate(
+            //     new Vector3(0, 0, 90 * localDirection),
+            //     rotateDuration
+            // )
+            // .SetRelative()
+            // .OnComplete(()=>{
+            //     isRotating = false;
+            //     isWallHit = false;
 
                 
-            });
+            // });
         }
         // corner rotate
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
@@ -278,33 +282,43 @@ public class PlayerController : MonoBehaviour
             
             //_col.enabled = false;
 
-            Sequence sq = DOTween.Sequence();
+            transform.position = endCenter;
+            transform.eulerAngles += new Vector3(0, 0, -90 * localDirection);
+            checkAttached();
+            isRotating = false;
+            isCornerMet = false;
 
-            sq
-            .SetId("corner rotate")
-            .OnStart(()=>{
-                transform
-                .DOMove(
-                    endCenter,
-                    rotateDuration
-                );
-                transform
-                .DOLocalRotate(
-                    new Vector3(0, 0, -90 * localDirection),
-                    rotateDuration
-                )
-                .SetRelative()
-                .OnComplete(()=>{
-                    checkAttached();
-                    isRotating = false;
-                    isCornerMet = false;
-                    //_col.enabled = true;
-                });
-            })
-            .AppendInterval(0.6f)
-            .OnComplete(()=>{
+
+            // Sequence sq = DOTween.Sequence();
+            // sq
+            // .SetId("corner rotate")
+            // .OnStart(()=>{
+            //     transform
+            //     .DOMove(
+            //         endCenter,
+            //         rotateDuration
+            //     );
+            //     transform
+            //     .DOLocalRotate(
+            //         new Vector3(0, 0, -90 * localDirection),
+            //         rotateDuration
+            //     )
+            //     .SetRelative()
+            //     .OnComplete(()=>{
+            //         checkAttached();
+            //         isRotating = false;
+            //         isCornerMet = false;
+            //         //_col.enabled = true;
+            //     });
+            // })
+            // .AppendInterval(0.6f)
+            // .OnComplete(()=>{
                 
-            });
+            // });
+        }
+
+        if(!isFalling && !checkAttached()){
+            StartCoroutine(liquidDrop2());
         }
 
         // movement
@@ -396,7 +410,7 @@ public class PlayerController : MonoBehaviour
             hit = Physics2D.Raycast(
                 feet.position + transform.right * localDirection * 0.18f, 
                 (-transform.right * localDirection - transform.up).normalized, 
-                0.4f, 
+                0.35f, 
                 groundLayer
             );
             
