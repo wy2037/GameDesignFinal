@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
 using Cinemachine;
-
+using UnityEngine.SceneManagement;
 public class GameFeelManager : MonoBehaviour
 {
     private static GameFeelManager _pm;
@@ -17,12 +17,9 @@ public class GameFeelManager : MonoBehaviour
     
     // pp component
     public Volume volume;
-    private VolumeProfile volumeProfile;
-
-    private Vignette vignette;
-
-    private ChromaticAberration chromaticAberration;
-    private LensDistortion lensDistortion;
+    [SerializeField]private Vignette vignette;
+    [SerializeField]private ChromaticAberration chromaticAberration;
+    [SerializeField]private LensDistortion lensDistortion;
     // Color
     public Color heatUpColor;
     public Color coolDownColor;
@@ -43,20 +40,13 @@ public class GameFeelManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
 
-        // camera
-
-        // post processing
-        volumeProfile = volume.sharedProfile;
-        volume.profile.TryGet<Vignette>(out vignette);
-        volume.profile.TryGet<LensDistortion>(out lensDistortion);
-        volume.profile.TryGet<ChromaticAberration>(out chromaticAberration);
 
         
     }
 
     private void Start() {
-
-        noise = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        ResetVariables(SceneManager.GetActiveScene().buildIndex);
     }
     private void Update() {
         if(Input.GetKeyDown(KeyCode.B)){
@@ -68,6 +58,26 @@ public class GameFeelManager : MonoBehaviour
         }
     }
 
+    private void ResetVariables(int levelIndex)
+    {
+        // post processing
+        volume = GameObject.FindGameObjectWithTag("PostProcessingVolume").GetComponent<Volume>();
+        volume.profile.TryGet<Vignette>(out vignette);
+        volume.profile.TryGet<LensDistortion>(out lensDistortion);
+        volume.profile.TryGet<ChromaticAberration>(out chromaticAberration);
+        // camera
+        virtualCamera = GameObject.FindGameObjectWithTag("VirtualCamera").GetComponent<CinemachineVirtualCamera>();
+        noise = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+    }
+
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Check if the loaded scene is the one you want to reset the variables for
+
+        ResetVariables(scene.buildIndex);
+
+    }
     public void heatUpEnter(){
         DOTween.Kill("normalEnter");
         DOTween.Kill("coolDownEnter");

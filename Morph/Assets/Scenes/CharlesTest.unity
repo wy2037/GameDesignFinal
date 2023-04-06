@@ -261,6 +261,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1665045316}
   volume: {fileID: 112782659}
+  vignette: {fileID: 0}
+  chromaticAberration: {fileID: 0}
+  lensDistortion: {fileID: 0}
   heatUpColor: {r: 0.972549, g: 0.037005804, b: 0, a: 0}
   coolDownColor: {r: 0, g: 0.54299736, b: 1, a: 0}
   normalColor: {r: 0, g: 0, b: 0, a: 0}
@@ -802,7 +805,7 @@ GameObject:
   - component: {fileID: 112782659}
   m_Layer: 12
   m_Name: PostProcessingVolume
-  m_TagString: Untagged
+  m_TagString: PostProcessingVolume
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2001,7 +2004,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 310124646}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.71, y: -0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -2032,6 +2035,19 @@ MonoBehaviour:
   isCornerMet: 0
   isRotating: 0
   isHorizontal: 0
+  distanceToSurface: 0
+  inputX: 0
+  inputY: 0
+  localDirection: 0
+  solidToLiquid: 0
+  liquidToGas: 100
+  rotateThreshold: 1.6
+  rotateDuration: 0.3
+  afkCooldown: 10
+  curAfkCooldown: 0
+  solidSprite: {fileID: 1192946590, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
+  liquidSprite: {fileID: -60784255, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
+  gasSprite: {fileID: 1719577913, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -2039,19 +2055,6 @@ MonoBehaviour:
   _col: {fileID: 0}
   _sr: {fileID: 0}
   _ani: {fileID: 0}
-  distanceToSurface: 0
-  inputX: 0
-  inputY: 0
-  localDirection: 0
-  solidSprite: {fileID: 1192946590, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
-  liquidSprite: {fileID: -60784255, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
-  gasSprite: {fileID: 1719577913, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
-  solidToLiquid: 0
-  liquidToGas: 100
-  rotateThreshold: 1.6
-  rotateDuration: 0.3
-  afkCooldown: 10
-  curAfkCooldown: 0
 --- !u!95 &310124652
 Animator:
   serializedVersion: 5
@@ -7821,7 +7824,7 @@ GameObject:
   - component: {fileID: 774332076}
   m_Layer: 0
   m_Name: roomtemp
-  m_TagString: Untagged
+  m_TagString: RoomTemperature
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8208,7 +8211,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835143422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0.71, y: -0.15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -32333,7 +32336,7 @@ GameObject:
   - component: {fileID: 1665045318}
   m_Layer: 0
   m_Name: CM vcam1
-  m_TagString: Untagged
+  m_TagString: VirtualCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32384,7 +32387,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1665045314}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0.71, y: -0.15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -32438,11 +32441,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f166420e9bfcb4ab28bc6f95bde919, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   temperature: 0
   speed: 4
   jumpForce: 6.2
   state: 0
   gravityScale: 1.4
+  lastCheckedPosition: {x: 0, y: 0, z: 0}
+  lastCheckedTemperature: 0
+  levelRoomTemperatures:
+  - -66
+  levelPlayerTemperatures:
+  - -1
+  levelPlayerPostion:
+  - {x: 0.71, y: -0.15}
+  roomTemperature: {fileID: 0}
 --- !u!4 &1711792220
 Transform:
   m_ObjectHideFlags: 0

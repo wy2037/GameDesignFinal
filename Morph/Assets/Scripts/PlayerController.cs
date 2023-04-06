@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private Transform center;
 
     // bool
+    [Header("status")]
     [SerializeField] private bool isAttached;
     [SerializeField] private bool isCeiling;
     [SerializeField] private bool isFalling;
@@ -22,35 +23,41 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isCornerMet;
     [SerializeField] private bool isRotating;
     [SerializeField] private bool isHorizontal;
-    // layer
-    public LayerMask groundLayer;
 
-    // component
-    [SerializeField] private Rigidbody2D _rb;
-    [SerializeField] private BoxCollider2D _col;
-    [SerializeField] private SpriteRenderer _sr;
-    [SerializeField] private Animator _ani;
-
+    // data
+    [Header("PlayerData")]
     [SerializeField] private float distanceToSurface;
     [SerializeField] private float inputX;
     [SerializeField] private float inputY;
     [SerializeField] private int localDirection; // left or right
-
-    // sprite
-    public Sprite solidSprite;
-    public Sprite liquidSprite; 
-    public Sprite gasSprite;
-
     // temperature changing points
     [SerializeField] private int solidToLiquid;
     [SerializeField] private int liquidToGas;
-
 
     // float
     public float rotateThreshold = 1.4f;
     public float rotateDuration = 0.2f;
     public float afkCooldown;
     [SerializeField] private float curAfkCooldown;
+
+    // sprite
+    [Header("Sprite")]
+    public Sprite solidSprite;
+    public Sprite liquidSprite; 
+    public Sprite gasSprite;
+
+    // layer
+    [Header("LayerMask")]
+    public LayerMask groundLayer;
+
+    // component
+    [Header("Components")]
+    [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] private BoxCollider2D _col;
+    [SerializeField] private SpriteRenderer _sr;
+    [SerializeField] private Animator _ani;
+
+
     
     private void Awake() {
         // get children
@@ -394,17 +401,14 @@ public class PlayerController : MonoBehaviour
 
     Vector2 checkWall(){
         if(isRotating) return Vector2.zero;
-        //int combinedMask = wallLayer | ceilingLayer | groundLayer;
         
         RaycastHit2D hit = Physics2D.Raycast(right.position, transform.right * localDirection, 0.2f, groundLayer);
         isWallHit = (hit.collider == null) ? false:true;
-        //Debug.DrawRay(transform.position, transform.right * Mathf.Infinity, Color.red);
         return (isWallHit)? hit.point : Vector2.zero;
     }
 
     Vector2 checkCorner(){
         if(isCornerMet || isRotating || _rb.gravityScale != 0) return Vector2.zero;
-        //int combinedMask = wallLayer | ceilingLayer | groundLayer;
         RaycastHit2D hit = new RaycastHit2D();
         if(!checkAttached()){
             hit = Physics2D.Raycast(
@@ -414,47 +418,12 @@ public class PlayerController : MonoBehaviour
                 groundLayer
             );
             
-            //Debug.Log($"corner: {((hit.collider == null) ? false : true)}");
             isCornerMet = (hit.collider == null) ? false : true;
         }
         return (isCornerMet) ? hit.point : Vector2.zero; 
     }
 
-/*
-    public void liquidDrop(){
-        if(PlayerData.Pd.state == State.Liquid){
-            isRotating = true;
-            Vector2 dropPos = Vector2.zero;
-            
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, groundLayer);
-            dropPos = hit.point;
-            dropPos.y += distanceToSurface;
-            //Debug.Log($"drop pos{dropPos}");
 
-            transform
-            .DOLocalRotate(
-                Vector3.zero,
-                0.3f
-            );
-            //.SetRelative();
-            
-            transform
-            .DOMove(
-                dropPos,
-                1f
-            )
-            .SetEase(Ease.InQuad)
-            .OnUpdate(()=>{
-                inputX = Input.GetAxisRaw("Horizontal");
-                transform.Translate(inputX * 0.05f, 0, 0);
-            })
-            .OnComplete(()=>{
-                isRotating = false;
-            });
-            
-        }
-    }
-*/
     public IEnumerator liquidDrop2(){
         if(!isFalling){
             isFalling = true;
@@ -468,11 +437,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public IEnumerator waitForAFK(){
-        while(true){
-
-        }
-    }
 
     private void OnDestroy() {
         DOTween.KillAll();
