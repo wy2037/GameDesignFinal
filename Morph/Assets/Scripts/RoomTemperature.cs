@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RoomTemperature : MonoBehaviour
 {
@@ -42,6 +43,12 @@ public class RoomTemperature : MonoBehaviour
                     PlayerData.Pd.temperature -= multiplier;
                 }
             }
+        }
+
+
+        if(Input.GetKeyDown(KeyCode.R)){
+            string a = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(a);
         }
     }
 }
