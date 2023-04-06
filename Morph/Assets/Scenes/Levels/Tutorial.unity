@@ -87915,7 +87915,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inZone: 0
-  roomTemperature: 0
+  roomTemperature: -50
   multiplier: 1
   maxCooldown: 0.05
   cooldown: 0

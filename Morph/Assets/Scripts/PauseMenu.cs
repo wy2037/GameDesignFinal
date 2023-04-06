@@ -52,6 +52,7 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void RestartButton(){
-        SceneManager.LoadScene("CharlesTest");
+        //SceneManager.LoadScene("CharlesTest");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
