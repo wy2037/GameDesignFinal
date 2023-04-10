@@ -99763,6 +99763,7 @@ GameObject:
   - component: {fileID: 1526681671}
   - component: {fileID: 1526681670}
   - component: {fileID: 1526681669}
+  - component: {fileID: 1526681674}
   m_Layer: 10
   m_Name: spike
   m_TagString: Untagged
@@ -100117,6 +100118,20 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1526681674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526681667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 0
+  stateType: 0
 --- !u!1 &1532024161
 GameObject:
   m_ObjectHideFlags: 0
@@ -101135,6 +101150,7 @@ GameObject:
   - component: {fileID: 1907493866}
   - component: {fileID: 1907493865}
   - component: {fileID: 1907493864}
+  - component: {fileID: 1907493869}
   m_Layer: 11
   m_Name: airVent
   m_TagString: Untagged
@@ -101509,6 +101525,20 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1907493869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907493862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 0
+  stateType: 2
 --- !u!1 &1915512124
 GameObject:
   m_ObjectHideFlags: 0
