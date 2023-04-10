@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
 
     // bool
     [Header("status")]
-    [SerializeField] private bool isAttached;
+    [SerializeField] public bool isAttached;
     [SerializeField] private bool isCeiling;
     [SerializeField] private bool isFalling;
     [SerializeField] private bool isWallHit;
@@ -219,14 +219,21 @@ public class PlayerController : MonoBehaviour
         _ani.SetFloat("Speed", Mathf.Abs(inputX));
         // change direction
         changeDirection();
+        // change drop rate
+        inputY = _rb.velocity.y;
+        if(inputY < 0){
+            inputY *= 1.015f;
+        }
         // set speed
-        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
+        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, inputY);
         if(checkAttached() && Input.GetKeyDown(KeyCode.Space)){
             _ani.SetBool("Grounded", isAttached);
             _ani.SetTrigger("Jump");
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
         }
+
+
 
         _ani.SetBool("Grounded", isAttached);
 

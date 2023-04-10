@@ -61,7 +61,8 @@ public class GameFeelManager : MonoBehaviour
     private void ResetVariables(int levelIndex)
     {
         // post processing
-        volume = GameObject.FindGameObjectWithTag("PostProcessingVolume").GetComponent<Volume>();
+        //volume = GameObject.FindGameObjectWithTag("PostProcessingVolume").GetComponent<Volume>();
+        volume = transform.GetComponent<Volume>();
         volume.profile.TryGet<Vignette>(out vignette);
         volume.profile.TryGet<LensDistortion>(out lensDistortion);
         volume.profile.TryGet<ChromaticAberration>(out chromaticAberration);
