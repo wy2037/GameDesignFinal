@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float inputX;
     [SerializeField] private float inputY;
     [SerializeField] private int localDirection; // left or right
+    [SerializeField] private float maxFallVelocity;
     // temperature changing points
     [SerializeField] private int solidToLiquid;
     [SerializeField] private int liquidToGas;
@@ -225,7 +226,7 @@ public class PlayerController : MonoBehaviour
             inputY *= 1.015f;
         }
         // set speed
-        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, inputY);
+        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Max(inputY, -maxFallVelocity));
         if(checkAttached() && Input.GetKeyDown(KeyCode.Space)){
             _ani.SetBool("Grounded", isAttached);
             _ani.SetTrigger("Jump");
@@ -368,7 +369,7 @@ public class PlayerController : MonoBehaviour
         // change direction
         changeDirection();
         // set speed
-        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, _rb.velocity.y);
+        _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Min(_rb.velocity.y, maxFallVelocity));
         if(checkCeiling() && Input.GetKeyDown(KeyCode.Space)){
             _ani.SetBool("Grounded", isCeiling);
             _ani.SetTrigger("Jump");

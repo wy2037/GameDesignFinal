@@ -2057,6 +2057,7 @@ MonoBehaviour:
   inputX: 0
   inputY: 0
   localDirection: 0
+  maxFallVelocity: 7.6
   solidToLiquid: 0
   liquidToGas: 100
   rotateThreshold: 1.6

@@ -80,6 +80,8 @@ public class LevelEntry : MonoBehaviour
         DOTween.KillAll();
         _ani.SetBool("Open", true);
         _player.GetComponent<PlayerController>().enabled = false;
+        _player.GetComponent<Rigidbody2D>().isKinematic = true;
+        _player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         _player.transform
         .DOMove(
             transform.position,
