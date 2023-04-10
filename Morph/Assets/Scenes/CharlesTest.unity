@@ -31672,7 +31672,7 @@ MonoBehaviour:
   speed: 4
   jumpForce: 6.2
   state: 0
-  gravityScale: 1.4
+  gravityScale: 1.2
   lastCheckedPosition: {x: 0, y: 0, z: 0}
   lastCheckedTemperature: 0
   levelRoomTemperatures:
