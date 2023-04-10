@@ -57,7 +57,6 @@ public class LevelEntry : MonoBehaviour
             transform.position,
             0.1f
         );
-        Debug.Log($"{_player.transform.position} {transform.position}");
         _player.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
         
         _ani.SetBool("Open", true);

@@ -150,7 +150,6 @@ public class PlayerController : MonoBehaviour
             _ani.SetTrigger("AFK");
             curAfkCooldown = afkCooldown;
         }
-        //Debug.Log($"clip: {_ani.GetCurrentAnimatorClipInfo(0)[0]}");
 
         // debug
         checkAttached();
@@ -266,7 +265,6 @@ public class PlayerController : MonoBehaviour
 
             Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface * rotateThreshold + wallHitPos;
 
-            Debug.Log(endCenter);
             transform.position = endCenter;
             transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
             isRotating = false;
