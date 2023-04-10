@@ -9,23 +9,25 @@ public enum ZoneType{
 
 public class TemperatureZone : MonoBehaviour
 {
-    public int zoneTemperature, roomTemperature;
-    public int multiplier;
+    public float zoneTemperature;
+    public float multiplier;
     public ZoneType zoneType;
     [SerializeField]
     float maxCooldown, cooldown = 0;
+    [SerializeField]
 
     void Update() {
         if (cooldown > 0) cooldown -= Time.deltaTime;
     }
 
     void OnTriggerEnter2D(Collider2D other) {
+        RoomTemperature.Rt.inZone = true;
         if (other.tag == "Player") {
             if (zoneType == ZoneType.Heater) {
                 GameFeelManager.Pm.heatUpEnter();
             }
             if (zoneType == ZoneType.Cooler) {
-                GameFeelManager.Pm.heatUpEnter();
+                GameFeelManager.Pm.coolDownEnter();
             }
         }
     }
@@ -45,17 +47,9 @@ public class TemperatureZone : MonoBehaviour
     }
 
     void OnTriggerExit2D(Collider2D other) {
-        if (other.tag == "Player" && cooldown <= 0) {
+        if (other.tag == "Player") {
             GameFeelManager.Pm.normalEnter();
-            if (PlayerData.Pd.temperature < roomTemperature) {
-                cooldown = maxCooldown;
-                PlayerData.Pd.temperature += multiplier;
-            }
-            if (PlayerData.Pd.temperature > roomTemperature) {
-                cooldown = maxCooldown;
-                PlayerData.Pd.temperature -= multiplier;
-                
-            }
+            RoomTemperature.Rt.inZone = false;
         }
     }
 }

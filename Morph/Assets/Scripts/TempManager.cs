@@ -11,7 +11,7 @@ public class TempManager : MonoBehaviour
     public TextMeshProUGUI tempText;
 
 
-    int temp = 70;
+    float temp = 70;
 
     private void Awake(){
         instance = this;
@@ -28,7 +28,7 @@ public class TempManager : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate() {
         temp = PlayerData.Pd.temperature;
-        tempText.text = temp.ToString() + "°C";
+        tempText.text =   $"{PlayerData.Pd.temperature:.0} °C";
 
     }
     public void addTemp(){
