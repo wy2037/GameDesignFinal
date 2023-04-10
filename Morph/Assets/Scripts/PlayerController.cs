@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
 
     // bool
     [Header("status")]
-    [SerializeField] private bool isAttached;
+    [SerializeField] public bool isAttached;
     [SerializeField] private bool isCeiling;
     [SerializeField] private bool isFalling;
     [SerializeField] private bool isWallHit;
