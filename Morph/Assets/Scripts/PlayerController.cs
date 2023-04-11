@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     private Transform feet;
     private Transform right;
     private Transform center;
+    private Transform front;
+    private Transform back;
 
     // bool
     [Header("status")]
@@ -66,8 +68,10 @@ public class PlayerController : MonoBehaviour
         center = transform.Find("center");
         feet = transform.Find("feet");
         right = transform.Find("right");
+        front = transform.Find("front");
+        back = transform.Find("back");
 
-        distanceToSurface = Vector2.Distance(center.position, feet.position);
+        distanceToSurface = Vector2.Distance(transform.position, feet.position);
 
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
@@ -155,10 +159,15 @@ public class PlayerController : MonoBehaviour
         checkAttached();
         checkCeiling();
         checkCorner();
-        Debug.DrawRay(feet.position + transform.right * localDirection * 0.18f, 
-            (-transform.right * localDirection - transform.up).normalized * 0.35f,
+        Debug.DrawRay(front.position, (-transform.right * localDirection - transform.up).normalized * 0.5f,
             Color.green
             );
+        Debug.DrawRay(back.position, (transform.right * localDirection - transform.up).normalized * 0.5f,
+            Color.blue
+            );
+
+        Debug.DrawRay(front.position, -transform.up * 0.2f, Color.cyan);
+        Debug.DrawRay(back.position, -transform.up * 0.2f, Color.cyan);
     }
 
 
@@ -241,7 +250,7 @@ public class PlayerController : MonoBehaviour
     void liquidControl(){
         //initiate
         if(isRotating) return;
-        if(Input.GetKeyDown(KeyCode.Space)) StartCoroutine(liquidDrop2());
+        // if(Input.GetKeyDown(KeyCode.Space)) StartCoroutine(liquidDrop2());
         if(!isFalling){
             _rb.gravityScale = 0;
             _rb.velocity = Vector2.zero;
@@ -255,7 +264,9 @@ public class PlayerController : MonoBehaviour
 
         changeDirection();
         Vector2 wallHitPos = checkWall();
-        Vector2 cornerHitPos = checkCorner();
+        // Vector2 cornerHitPos = checkCorner();
+        bool isFront = true;
+        Vector2 cornerHitPos = checkCorner2(ref isFront);
         checkAttached();
         _ani.SetBool("Grounded", isAttached);
         // wall rotate
@@ -263,7 +274,7 @@ public class PlayerController : MonoBehaviour
             isRotating = true;
             isHorizontal = !isHorizontal;
 
-            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface * rotateThreshold + wallHitPos;
+            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface + wallHitPos;
 
             transform.position = endCenter;
             transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
@@ -283,56 +294,53 @@ public class PlayerController : MonoBehaviour
             // .OnComplete(()=>{
             //     isRotating = false;
             //     isWallHit = false;
-
-                
             // });
         }
         // corner rotate
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
             isRotating = true;
             isHorizontal = !isHorizontal;
-            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface  * rotateThreshold + cornerHitPos;
+            Vector2 endCenter =  ((isFront)? 1:-1) * (Vector2)transform.right * (localDirection) * distanceToSurface  + cornerHitPos;
+            Debug.Log(endCenter);
             
-            //_col.enabled = false;
-
-            transform.position = endCenter;
-            transform.eulerAngles += new Vector3(0, 0, -90 * localDirection);
+            
+            //transform.position = endCenter;
+            //transform.eulerAngles += new Vector3(0, 0,  ((isFront)? 1 : -1) * -90 * localDirection);
             checkAttached();
-            isRotating = false;
-            isCornerMet = false;
+            // isRotating = false;
+            // isCornerMet = false;
 
 
-            // Sequence sq = DOTween.Sequence();
-            // sq
-            // .SetId("corner rotate")
-            // .OnStart(()=>{
-            //     transform
-            //     .DOMove(
-            //         endCenter,
-            //         rotateDuration
-            //     );
-            //     transform
-            //     .DOLocalRotate(
-            //         new Vector3(0, 0, -90 * localDirection),
-            //         rotateDuration
-            //     )
-            //     .SetRelative()
-            //     .OnComplete(()=>{
-            //         checkAttached();
-            //         isRotating = false;
-            //         isCornerMet = false;
-            //         //_col.enabled = true;
-            //     });
-            // })
-            // .AppendInterval(0.6f)
-            // .OnComplete(()=>{
+            Sequence sq = DOTween.Sequence();
+            sq
+            .SetId("corner rotate")
+            .OnStart(()=>{
+                transform
+                .DOMove(
+                    endCenter,
+                    rotateDuration
+                );
+                transform
+                .DOLocalRotate(
+                    new Vector3(0, 0, ((isFront)? 1 : -1) * -90 * localDirection),
+                    rotateDuration
+                )
+                .SetRelative()
+                .OnComplete(()=>{
+                    checkAttached();
+                    isRotating = false;
+                    isCornerMet = false;
+                });
+            })
+            .AppendInterval(rotateDuration + 0.1f)
+            .OnComplete(()=>{
                 
-            // });
+            });
         }
 
-        if(!isFalling && !checkAttached()){
-            StartCoroutine(liquidDrop2());
-        }
+        // if(!isFalling && !checkAttached()){
+        //     StartCoroutine(liquidDrop2());
+        // }
 
         // movement
         if(!isRotating){
@@ -394,17 +402,14 @@ public class PlayerController : MonoBehaviour
     }
 
     bool checkAttached(){
-        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.1f, groundLayer);
-        //if(isAttached) _ani.ResetTrigger("Jump");
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.05f, groundLayer);
         return isAttached;
     }
 
     bool checkCeiling(){
         isCeiling = Physics2D.Raycast(head.position, transform.up, 0.05f, groundLayer);
-        //if(isAttached) _ani.ResetTrigger("Jump");
         return isCeiling;
     }
-
     Vector2 checkWall(){
         if(isRotating) return Vector2.zero;
         
@@ -430,6 +435,43 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    Vector2 checkCorner2(ref bool isFront){
+        if(isRotating || _rb.gravityScale != 0) return Vector2.zero;
+        RaycastHit2D hit = new RaycastHit2D();
+        RaycastHit2D frontHit = new RaycastHit2D();
+        RaycastHit2D backHit = new RaycastHit2D();
+        if(!checkAttached()){
+            frontHit = Physics2D.Raycast(front.position, -transform.up, 0.2f, groundLayer);
+            backHit = Physics2D.Raycast(back.position, -transform.up, 0.2f, groundLayer);
+            Debug.Log($"{frontHit.point}   {backHit.point}");
+            if(!frontHit && backHit) isFront = true;
+            if(frontHit && !backHit) isFront = false;
+            Debug.Log(isFront);
+            // if(!frontHit && !backHit){
+            //     StartCoroutine(liquidDrop2());
+            //     return Vector2.zero;
+            // }
+            if(isFront) hit = Physics2D.Raycast(front.position, (-transform.right * localDirection - transform.up).normalized, 0.5f, groundLayer);
+            Debug.Log(hit.point);
+            if(!isFront) hit = Physics2D.Raycast(back.position, (transform.right * localDirection - transform.up).normalized, 0.5f, groundLayer);
+            Debug.Log(hit.point);
+            // hit = (frontHit)? Physics2D.Raycast(
+            //         front.position, 
+            //         (-transform.right * localDirection - transform.up).normalized, 
+            //         0.5f, 
+            //         groundLayer
+            //     ):Physics2D.Raycast(
+            //         back.position,
+            //         (transform.right * localDirection - transform.up).normalized, 
+            //         0.5f, 
+            //         groundLayer
+            //     );
+            
+            isCornerMet = ((frontHit && !backHit) || (!frontHit && backHit)) ? true : false;
+            Debug.Log($"corner: {hit.point}");
+        }
+        return (isCornerMet) ? hit.point : Vector2.zero; 
+    }
     public IEnumerator liquidDrop2(){
         if(!isFalling){
             isFalling = true;
