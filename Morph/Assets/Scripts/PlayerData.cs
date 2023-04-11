@@ -62,8 +62,13 @@ public class PlayerData : MonoBehaviour
         player.position = levelPlayerPostion[levelIndex];
 
         // Level Data
-        roomTemperature = GameObject.FindWithTag("RoomTemperature").GetComponent<RoomTemperature>();
-        roomTemperature.roomTemperature = levelRoomTemperatures[levelIndex];
+        try{
+            roomTemperature = GameObject.FindWithTag("RoomTemperature").GetComponent<RoomTemperature>();
+            roomTemperature.roomTemperature = levelRoomTemperatures[levelIndex];
+        }
+        catch{
+            Debug.Log("no room temperature");
+        }
     }
 
     
