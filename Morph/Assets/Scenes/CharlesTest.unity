@@ -2086,6 +2086,7 @@ MonoBehaviour:
   isCornerMet: 0
   isRotating: 0
   isHorizontal: 0
+  previousState: 0
   distanceToSurface: 0
   inputX: 0
   inputY: 0
@@ -18715,7 +18716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa9b74240782487d976e995a3836ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoneTemperature: 90
+  zoneTemperature: 110
   multiplier: 1
   zoneType: 0
   maxCooldown: 0.05

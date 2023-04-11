@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isRotating;
     [SerializeField] private bool isHorizontal;
 
+    [SerializeField] private State previousState;
+
     // data
     [Header("PlayerData")]
     [SerializeField] private float distanceToSurface;
@@ -173,11 +175,19 @@ public class PlayerController : MonoBehaviour
 
     void solidInit(){
         PlayerData.Pd.state = State.Solid;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
+        // animation
         _ani.SetBool("Solid", true);
         _ani.SetBool("Gas", false);
         _ani.SetBool("Liquid", false);
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
-        //_sr.sprite = solidSprite;
+        switch (previousState){
+            case State.Liquid:
+                _ani.SetTrigger("LiquidToSolid");
+                break;
+        }
+        previousState = State.Solid;
+
+
 
         _col.offset = new Vector2(0,-0.15f);
         _col.size = new Vector2(0.64f,0.66f);
@@ -191,11 +201,21 @@ public class PlayerController : MonoBehaviour
     }
     void liquidInit(){
         PlayerData.Pd.state = State.Liquid;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
+        // animation
         _ani.SetBool("Liquid", true);
         _ani.SetBool("Solid", false);
         _ani.SetBool("Gas", false);
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
-        //_sr.sprite = liquidSprite;
+        switch (previousState){
+            case State.Solid:
+                _ani.SetTrigger("SolidToLiquid");
+                break;
+            case State.Gas:
+                _ani.SetTrigger("GasToLiquid");
+                break;
+        }
+        previousState = State.Liquid;
+
         
         _col.offset = new Vector2(0,-0.27f);
         _col.size = new Vector2(0.64f,0.41f);
@@ -206,11 +226,18 @@ public class PlayerController : MonoBehaviour
     }
     void gasInit(){
         PlayerData.Pd.state = State.Gas;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
+        // animation
         _ani.SetBool("Gas", true);
         _ani.SetBool("Liquid", false);
         _ani.SetBool("Solid", false);
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
-        //_sr.sprite = gasSprite;
+        switch (previousState){
+            case State.Liquid:
+                _ani.SetTrigger("LiquidToGas");
+                break;
+
+        }
+        previousState = State.Gas;
 
         _col.offset = new Vector2(0,-0.06f);
         _col.size = new Vector2(0.6f, 0.46f);
@@ -276,25 +303,26 @@ public class PlayerController : MonoBehaviour
 
             Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface + wallHitPos;
 
-            transform.position = endCenter;
-            transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
-            isRotating = false;
-            isWallHit = false;
-            // transform
-            // .DOMove(
-            //     endCenter,
-            //     rotateDuration
-            // );
-            // transform
-            // .DOLocalRotate(
-            //     new Vector3(0, 0, 90 * localDirection),
-            //     rotateDuration
-            // )
-            // .SetRelative()
-            // .OnComplete(()=>{
-            //     isRotating = false;
-            //     isWallHit = false;
-            // });
+            // transform.position = endCenter;
+            // transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
+            // isRotating = false;
+            // isWallHit = false;
+            transform
+            .DOMove(
+                endCenter,
+                rotateDuration
+            );
+            transform
+            .DOLocalRotate(
+                new Vector3(0, 0, 90 * localDirection),
+                rotateDuration
+            )
+            .SetRelative()
+            .OnComplete(()=>{
+                isRotating = false;
+                isWallHit = false;
+                if(PlayerData.Pd.state == State.Solid || PlayerData.Pd.state == State.Gas) transform.rotation = Quaternion.identity;
+            });
         }
         // corner rotate
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
@@ -330,6 +358,7 @@ public class PlayerController : MonoBehaviour
                     checkAttached();
                     isRotating = false;
                     isCornerMet = false;
+                    if(PlayerData.Pd.state == State.Solid || PlayerData.Pd.state == State.Gas) transform.rotation = Quaternion.identity;
                 });
             })
             .AppendInterval(rotateDuration + 0.1f)
