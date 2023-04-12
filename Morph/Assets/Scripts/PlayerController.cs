@@ -559,13 +559,7 @@ public class PlayerController : MonoBehaviour
         .SetRelative();
 
         yield return new WaitForSeconds(1.1f);
-
-        transform
-        .DOMove(
-            PlayerData.Pd.lastCheckedPosition,
-            0.1f
-        );
-
+        transform.position = PlayerData.Pd.lastCheckedPosition;
 
         // after moving
         transform.rotation = Quaternion.identity;
