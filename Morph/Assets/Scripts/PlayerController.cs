@@ -89,7 +89,16 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Start() {
-        solidInit();
+        _ani.SetTrigger("StartScene");
+        if(PlayerData.Pd.temperature <= solidToLiquid){
+            solidInit();
+        }
+        else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
+            liquidInit();
+        }
+        else if (PlayerData.Pd.temperature > liquidToGas){
+            gasInit();
+        }
         curAfkCooldown = afkCooldown;
     }
     private void Update() {
