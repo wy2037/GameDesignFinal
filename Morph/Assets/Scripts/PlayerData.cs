@@ -83,6 +83,9 @@ public class PlayerData : MonoBehaviour
             string curScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(curScene);
         }
+        else if (Input.GetKeyDown(KeyCode.Q)){
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
 
 }

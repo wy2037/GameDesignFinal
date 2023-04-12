@@ -211,6 +211,7 @@ public class PlayerController : MonoBehaviour
     void liquidInit(){
         PlayerData.Pd.state = State.Liquid;
         this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
+
         // animation
         _ani.SetBool("Liquid", true);
         _ani.SetBool("Solid", false);
@@ -223,15 +224,19 @@ public class PlayerController : MonoBehaviour
                 _ani.SetTrigger("GasToLiquid");
                 break;
         }
-        previousState = State.Liquid;
 
         
         _col.offset = new Vector2(0,-0.27f);
         _col.size = new Vector2(0.64f,0.41f);
 
         _rb.isKinematic = false;
+
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        StartCoroutine(liquidDrop2());
+
+        if(previousState == State.Gas) StartCoroutine(liquidRaise());
+        else if(previousState == State.Solid) StartCoroutine(liquidDrop2());
+        
+        previousState = State.Liquid;
     }
     void gasInit(){
         PlayerData.Pd.state = State.Gas;
@@ -516,6 +521,74 @@ public class PlayerController : MonoBehaviour
             
         }
     }
+
+    public IEnumerator liquidRaise(){
+        if(!isFalling){
+            isFalling = true;
+            Debug.Log("inverse");
+            transform.position -= new Vector3(0, distanceToSurface, 0);
+            transform.rotation = Quaternion.Euler(0, 0, 180f);
+            isHorizontal = true;
+            _rb.gravityScale = -PlayerData.Pd.gravityScale;
+            yield return new WaitUntil(()=>(checkAttached()));
+            _rb.gravityScale = 0f;
+            isFalling = false;
+        }
+    }
+
+    public IEnumerator die(){
+        //_player.GetComponent<PlayerController>().enabled = false;
+        _rb.isKinematic = true;
+        _rb.velocity = Vector2.zero;
+        _col.enabled = false;
+
+        _sr.color = Color.red;
+        _sr
+        .DOFade(
+            0,
+            1f
+        );
+
+        transform
+        .DOLocalJump(
+            Vector3.right * (Random.Range(0, 1) == 1? 1 : -1),
+            1,
+            1,
+            1f
+        )
+        .SetRelative();
+
+        yield return new WaitForSeconds(1.1f);
+
+        transform
+        .DOMove(
+            PlayerData.Pd.lastCheckedPosition,
+            0.1f
+        );
+
+
+        // after moving
+        transform.rotation = Quaternion.identity;
+        PlayerData.Pd.temperature = PlayerData.Pd.lastCheckedTemperature;
+        _ani.SetTrigger("StartScene");
+        _sr.color = Color.white;
+
+        for (int i = 0; i < 3; i++)
+        {
+            _sr.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(0.2f);
+            _sr.color = new Color(1, 1, 1, 0);
+            yield return new WaitForSeconds(0.2f);
+        }
+        _sr.color = new Color(1, 1, 1, 1);
+        _rb.isKinematic = false;
+        // enable
+        _rb.velocity = Vector2.zero;
+        _col.enabled = true;
+        if(PlayerData.Pd.state == State.Liquid) StartCoroutine(liquidDrop2());
+    }
+
+
 
 
     private void OnDestroy() {
