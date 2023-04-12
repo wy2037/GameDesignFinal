@@ -21,7 +21,12 @@ public class TemperatureZone : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        RoomTemperature.Rt.inZone = true;
+        try{
+            RoomTemperature.Rt.inZone = true;
+        }
+        catch{
+
+        }
         if (other.tag == "Player") {
             if (zoneType == ZoneType.Heater) {
                 GameFeelManager.Pm.heatUpEnter();
@@ -49,7 +54,12 @@ public class TemperatureZone : MonoBehaviour
     void OnTriggerExit2D(Collider2D other) {
         if (other.tag == "Player") {
             GameFeelManager.Pm.normalEnter();
-            RoomTemperature.Rt.inZone = false;
+            try{
+                RoomTemperature.Rt.inZone = false;
+            }
+            catch{
+                
+            }
         }
     }
 }

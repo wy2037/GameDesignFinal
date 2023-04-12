@@ -40,7 +40,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int liquidToGas;
 
     // float
-    public float rotateThreshold = 1.4f;
     public float rotateDuration = 0.2f;
     public float afkCooldown;
     [SerializeField] private float curAfkCooldown;
@@ -170,6 +169,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.DrawRay(front.position, -transform.up * 0.2f, Color.cyan);
         Debug.DrawRay(back.position, -transform.up * 0.2f, Color.cyan);
+        Debug.DrawRay(feet.position, -transform.up * 0.05f, Color.cyan);
     }
 
 
@@ -328,17 +328,11 @@ public class PlayerController : MonoBehaviour
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
             isRotating = true;
             isHorizontal = !isHorizontal;
-            Vector2 endCenter =  ((isFront)? 1:-1) * (Vector2)transform.right * (localDirection) * distanceToSurface  + cornerHitPos;
+            Vector2 endCenter =  ((isFront)? 1:-1) * (Vector2)transform.right * (localDirection) * distanceToSurface * 1.01f  + cornerHitPos;
             Debug.Log(endCenter);
             
-            
-            //transform.position = endCenter;
-            //transform.eulerAngles += new Vector3(0, 0,  ((isFront)? 1 : -1) * -90 * localDirection);
+
             checkAttached();
-            // isRotating = false;
-            // isCornerMet = false;
-
-
             Sequence sq = DOTween.Sequence();
             sq
             .SetId("corner rotate")
