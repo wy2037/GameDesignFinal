@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/CharlesTest.unity
+    guid: b79fe024975b9264eb57f8e312472828
+  - enabled: 1
     path: Assets/Scenes/Levels/Tutorial(New).unity
     guid: 041b32a46eba80f47a92f9b442f0989d
   - enabled: 1
