@@ -14,7 +14,7 @@ public class GameFeelManager : MonoBehaviour
     // camera
     public CinemachineVirtualCamera virtualCamera;
     private CinemachineBasicMultiChannelPerlin noise;
-    
+
     // pp component
     public Volume volume;
     [SerializeField]private Vignette vignette;
@@ -29,6 +29,8 @@ public class GameFeelManager : MonoBehaviour
     [SerializeField] private float lensDistortionIntensity = 0.2f;
     [SerializeField] private float vignetteIntensity = 0.55f;
     [SerializeField] private float chromaticAberrationIntensity = 0.3f;
+    [SerializeField] private float zoomInOrthographicSize = 1f;
+    [SerializeField] private float zoomOutOrthographicSize = 4f;
 
     private void Awake() {
         // init
@@ -142,6 +144,23 @@ public class GameFeelManager : MonoBehaviour
         DOTween.To(()=> noise.m_AmplitudeGain, x => noise.m_AmplitudeGain = x, 0.0f, 2f)
         .SetId("coolDownEnter");
     }
+
+    public IEnumerator levelStart(){
+        virtualCamera.m_Lens.OrthographicSize = zoomInOrthographicSize;
+        yield return new WaitForSeconds(1.4f);
+        DOTween.To(()=> virtualCamera.m_Lens.OrthographicSize, x => virtualCamera.m_Lens.OrthographicSize = x, zoomOutOrthographicSize, 1.2f)
+        .SetEase(Ease.InOutSine);
+    }
+
+    public IEnumerator levelEnd(){
+        DOTween.To(()=> virtualCamera.m_Lens.OrthographicSize, x => virtualCamera.m_Lens.OrthographicSize = x, zoomInOrthographicSize, 1.2f)
+        .SetEase(Ease.InOutSine)
+        .OnKill(()=>{
+            Debug.Log("end pp is killed wtf");
+        });
+        yield return new WaitForSeconds(1.4f);
+    }
+
 
     public void gethitPostProcessing(){
         chromaticAberration.intensity.value = 1f;

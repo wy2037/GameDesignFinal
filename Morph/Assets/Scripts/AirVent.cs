@@ -18,7 +18,7 @@ public class AirVent : MonoBehaviour
         if (collision.gameObject.name == "Player" && PlayerData.Pd.state == State.Gas) {
             Debug.Log("Gas player hit air vent!");
             // Call function in player to damage
-            StartCoroutine(die());
+            StartCoroutine(_player.GetComponent<PlayerController>().die());
         }
     }
 

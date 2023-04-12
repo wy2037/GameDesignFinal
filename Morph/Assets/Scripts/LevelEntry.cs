@@ -48,8 +48,11 @@ public class LevelEntry : MonoBehaviour
     }
 
     private IEnumerator loadStart(){
-            _player.GetComponent<PlayerController>().enabled = false;
-            _player.GetComponent<Rigidbody2D>().isKinematic = true;
+        // post processing
+        StartCoroutine(GameFeelManager.Pm.levelStart());
+        // set player data
+        _player.GetComponent<PlayerController>().enabled = false;
+        _player.GetComponent<Rigidbody2D>().isKinematic = true;
         PlayerData.Pd.lastCheckedPosition = transform.position;
         PlayerData.Pd.lastCheckedTemperature = PlayerData.Pd.levelRoomTemperatures[SceneManager.GetActiveScene().buildIndex];
         _player.transform
@@ -57,9 +60,8 @@ public class LevelEntry : MonoBehaviour
             transform.position,
             0.1f
         );
-        Debug.Log($"{_player.transform.position} {transform.position}");
         _player.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
-        
+        // player animation
         _ani.SetBool("Open", true);
 
         yield return new WaitForSeconds(1f);
@@ -75,11 +77,17 @@ public class LevelEntry : MonoBehaviour
         });
 
 
+
     }
     private IEnumerator loadNext(){
-        DOTween.KillAll();
+        // post processing
+        StartCoroutine(GameFeelManager.Pm.levelEnd());
+        // set player data
+        //DOTween.KillAll();
         _ani.SetBool("Open", true);
         _player.GetComponent<PlayerController>().enabled = false;
+        _player.GetComponent<Rigidbody2D>().isKinematic = true;
+        _player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         _player.transform
         .DOMove(
             transform.position,
