@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
 
     
     private void Awake() {
+
         // get children
         head = transform.Find("head");
         center = transform.Find("center");
@@ -104,6 +106,7 @@ public class PlayerController : MonoBehaviour
         curAfkCooldown = afkCooldown;
     }
     private void Update() {
+        if(Input.GetKeyDown(KeyCode.Alpha0)) SceneManager.LoadScene(0);
         if(isEnabled){
             if(Input.GetKeyDown(KeyCode.F)){
                 stateFlag = !stateFlag;
