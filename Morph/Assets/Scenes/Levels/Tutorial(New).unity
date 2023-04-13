@@ -1660,6 +1660,7 @@ MonoBehaviour:
   isCornerMet: 0
   isRotating: 0
   isHorizontal: 0
+  isEnabled: 0
   previousState: 0
   distanceToSurface: 0
   inputX: 0
@@ -62635,7 +62636,9 @@ MonoBehaviour:
   levelRoomTemperatures:
   - -66
   - -50
+  - -50
   levelPlayerTemperatures:
+  - -50
   - -50
   - -50
   levelPlayerPostion:
