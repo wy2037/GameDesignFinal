@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isCornerMet;
     [SerializeField] private bool isRotating;
     [SerializeField] private bool isHorizontal;
+    [SerializeField] private bool isEnabled;
 
     [SerializeField] private State previousState;
 
@@ -80,6 +81,7 @@ public class PlayerController : MonoBehaviour
         _ani = GetComponent<Animator>();
 
         // bool
+        isEnabled = true;
         _rb.isKinematic = false;
         isHorizontal = true; 
         stateFlag = false;
@@ -102,83 +104,86 @@ public class PlayerController : MonoBehaviour
         curAfkCooldown = afkCooldown;
     }
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.F)){
-            stateFlag = !stateFlag;
-        }
+        if(isEnabled){
+            if(Input.GetKeyDown(KeyCode.F)){
+                stateFlag = !stateFlag;
+            }
 
-        if(stateFlag){
-            // temperate way of switching state
-            if(Input.GetKeyDown(KeyCode.Z)){
-                solidInit();
+            if(stateFlag){
+                // temperate way of switching state
+                if(Input.GetKeyDown(KeyCode.Z)){
+                    solidInit();
+                }
+                else if (Input.GetKeyDown(KeyCode.X)){
+                    liquidInit();
+                }
+                else if (Input.GetKeyDown(KeyCode.C)){
+                    gasInit();
+                }
+                else if(Input.GetKeyDown(KeyCode.V)){
+                    StartCoroutine(liquidDrop2());
+                }
+            }else{
+                if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
+                    solidInit();
+                }
+                else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
+                    liquidInit();
+                }
+                else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
+                    gasInit();
+                }
+                else if(Input.GetKeyDown(KeyCode.V)){
+                    StartCoroutine(liquidDrop2());
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.X)){
-                liquidInit();
-            }
-            else if (Input.GetKeyDown(KeyCode.C)){
-                gasInit();
-            }
-            else if(Input.GetKeyDown(KeyCode.V)){
-                StartCoroutine(liquidDrop2());
-            }
-        }else{
-            if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
-                solidInit();
-            }
-            else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
-                liquidInit();
-            }
-            else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
-                gasInit();
-            }
-            else if(Input.GetKeyDown(KeyCode.V)){
-                StartCoroutine(liquidDrop2());
-            }
-        }
 
-        switch(PlayerData.Pd.state){
-            case State.Solid:
-            {
-                solidControl();
-                break;
+            switch(PlayerData.Pd.state){
+                case State.Solid:
+                {
+                    solidControl();
+                    break;
+                }
+                case State.Liquid:
+                {
+                    liquidControl();
+                    break;
+                }
+                case State.Gas:
+                {
+                    gasControl();
+                    break;
+                }
+                
             }
-            case State.Liquid:
-            {
-                liquidControl();
-                break;
+
+            // afk
+            curAfkCooldown -= Time.deltaTime;
+            if( inputX != 0 || inputY != 0 ){
+                //_ani.SetTrigger("AFK");
+                curAfkCooldown = afkCooldown;
             }
-            case State.Gas:
-            {
-                gasControl();
-                break;
+            if(curAfkCooldown < 0){
+                _ani.SetTrigger("AFK");
+                curAfkCooldown = afkCooldown;
             }
+
+            // debug
+            checkAttached();
+            checkCeiling();
+            checkCorner();
+            Debug.DrawRay(front.position, (-transform.right * localDirection - transform.up).normalized * 0.5f,
+                Color.green
+                );
+            Debug.DrawRay(back.position, (transform.right * localDirection - transform.up).normalized * 0.5f,
+                Color.blue
+                );
+
+            Debug.DrawRay(front.position, -transform.up * 0.2f, Color.cyan);
+            Debug.DrawRay(back.position, -transform.up * 0.2f, Color.cyan);
+            Debug.DrawRay(feet.position, -transform.up * 0.05f, Color.cyan);
             
         }
-
-        // afk
-        curAfkCooldown -= Time.deltaTime;
-        if( inputX != 0 || inputY != 0 ){
-            //_ani.SetTrigger("AFK");
-            curAfkCooldown = afkCooldown;
-        }
-        if(curAfkCooldown < 0){
-            _ani.SetTrigger("AFK");
-            curAfkCooldown = afkCooldown;
-        }
-
-        // debug
-        checkAttached();
-        checkCeiling();
-        checkCorner();
-        Debug.DrawRay(front.position, (-transform.right * localDirection - transform.up).normalized * 0.5f,
-            Color.green
-            );
-        Debug.DrawRay(back.position, (transform.right * localDirection - transform.up).normalized * 0.5f,
-            Color.blue
-            );
-
-        Debug.DrawRay(front.position, -transform.up * 0.2f, Color.cyan);
-        Debug.DrawRay(back.position, -transform.up * 0.2f, Color.cyan);
-        Debug.DrawRay(feet.position, -transform.up * 0.05f, Color.cyan);
     }
 
 
@@ -541,6 +546,7 @@ public class PlayerController : MonoBehaviour
         _rb.isKinematic = true;
         _rb.velocity = Vector2.zero;
         _col.enabled = false;
+        isEnabled = false;
 
         _sr.color = Color.red;
         _sr
@@ -574,6 +580,7 @@ public class PlayerController : MonoBehaviour
             _sr.color = new Color(1, 1, 1, 0);
             yield return new WaitForSeconds(0.2f);
         }
+        isEnabled = true;
         _sr.color = new Color(1, 1, 1, 1);
         _rb.isKinematic = false;
         // enable
