@@ -5,7 +5,7 @@ using System.Linq;
 
 public class PlayerKeys : MonoBehaviour
 {
-    private Transform left, mid, right, leftPressed, midPressed, rightPressed;
+    [SerializeField] private Transform left, mid, right, leftPressed, midPressed, rightPressed;
 
     private Transform _player;
     private PlayerController _pc;
@@ -15,7 +15,7 @@ public class PlayerKeys : MonoBehaviour
 
     private HashSet<KeyCode> keysHori = new HashSet<KeyCode>{ KeyCode.A, KeyCode.D };
     private HashSet<KeyCode> keysVerti = new HashSet<KeyCode>{ KeyCode.W, KeyCode.S};
-    int horiNum, VertiNum;
+    int horiNum = 0, VertiNum = 0;
     void Start()
     {
         _player = transform.parent;
@@ -33,54 +33,67 @@ public class PlayerKeys : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horiNum = keysHori.Count(key => Input.GetKey(key));
-        VertiNum = keysVerti.Count(key=> Input.GetKey(key));
+        // horiNum = keysHori.Count(key => Input.GetKey(key));
+        // VertiNum = keysVerti.Count(key=> Input.GetKey(key));
+        foreach(var key in keysHori){
+            if(Input.GetKeyDown(key)) ++horiNum;
+            if(Input.GetKeyUp(key)) --horiNum;
+        }
+        foreach(var key in keysVerti){
+            if(Input.GetKeyDown(key)) ++horiNum;
+            if(Input.GetKeyUp(key)) --horiNum;
+        }
 
-        Debug.Log($"key: {horiNum} {VertiNum}");
+        //Debug.Log($"key: {horiNum} {VertiNum}");
         switch (PlayerData.Pd.state){
 
             case State.Solid:
-                if(!midPressed.gameObject.activeSelf) midPressed.gameObject.SetActive(true);
-                if(!mid.gameObject.activeSelf) mid.gameObject.SetActive(true);
-                if(Input.GetKeyDown(KeyCode.A)){
-                    pressLeft();
-                }
-                if(Input.GetKeyUp(KeyCode.A)){
-                    releaseLeft();
-                }
+                if(!midPressed.gameObject.activeSelf && !mid.gameObject.activeSelf) midPressed.gameObject.SetActive(true);
+
                 if(Input.GetKeyDown(KeyCode.Space)){
+                    Debug.Log("space press");
                     pressSpace();
                 }
                 if(Input.GetKeyUp(KeyCode.Space)){
+                    Debug.Log("space release");
                     releaseSpace();
                 }
-                if(Input.GetKeyDown(KeyCode.D)){
-                    pressRight();
-                }
-                if(Input.GetKeyUp(KeyCode.D)){
-                    releaseRight();
+                switch (horiNum){
+                    case 0:
+                        releaseLeft();
+                        releaseRight();
+                        break;
+                    case 1:
+                        pressRight();
+                        releaseLeft();
+                        break;
+                    case 2:
+                        pressRight();
+                        pressLeft();
+                        break;
                 }
                 break;
             case State.Gas:
-                if(!midPressed.gameObject.activeSelf) midPressed.gameObject.SetActive(true);
-                if(!mid.gameObject.activeSelf) mid.gameObject.SetActive(true);
-                if(Input.GetKeyDown(KeyCode.A)){
-                    pressLeft();
-                }
-                if(Input.GetKeyUp(KeyCode.A)){
-                    releaseLeft();
+                if(!midPressed.gameObject.activeSelf && !mid.gameObject.activeSelf) midPressed.gameObject.SetActive(true);
+
+                switch (horiNum){
+                    case 0:
+                        releaseLeft();
+                        releaseRight();
+                        break;
+                    case 1:
+                        pressRight();
+                        releaseLeft();
+                        break;
+                    case 2:
+                        pressRight();
+                        pressLeft();
+                        break;
                 }
                 if(Input.GetKeyDown(KeyCode.Space)){
                     pressSpace();
-                }
-                if(Input.GetKeyUp(KeyCode.Space)){
+                }else if(Input.GetKeyUp(KeyCode.Space)){
                     releaseSpace();
-                }
-                if(Input.GetKeyDown(KeyCode.D)){
-                    pressRight();
-                }
-                if(Input.GetKeyUp(KeyCode.D)){
-                    releaseRight();
                 }
                 break;
             case State.Liquid:
@@ -103,23 +116,23 @@ public class PlayerKeys : MonoBehaviour
     }
 
     void pressSpace(){
-        midPressed.gameObject.SetActive(true);
         mid.gameObject.SetActive(false);
+        midPressed.gameObject.SetActive(true);
     }
 
     void releaseSpace(){
-        mid.gameObject.SetActive(true);
         midPressed.gameObject.SetActive(false);
+        mid.gameObject.SetActive(true);
     }
 
 
     void pressRight(){
-        rightPressed.gameObject.SetActive(true);
         right.gameObject.SetActive(false);
+        rightPressed.gameObject.SetActive(true);
     }
 
     void releaseRight(){
-        right.gameObject.SetActive(true);
         rightPressed.gameObject.SetActive(false);
+        right.gameObject.SetActive(true);
     }
 }
