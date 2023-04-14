@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Switch : MonoBehaviour
 {
@@ -28,9 +29,11 @@ public class Switch : MonoBehaviour
                 Debug.Log("Switch mode " + zoneTempIdx);
                 temperatureZone.zoneTemperature = zoneTemperature[zoneTempIdx];
                 if (PlayerData.Pd.temperature < zoneTemperature[zoneTempIdx]) {
+                    temperatureZone.GetComponent<Tilemap>().color = Color.red;
                     temperatureZone.zoneType = ZoneType.Heater;
                 }
                 if (PlayerData.Pd.temperature > zoneTemperature[zoneTempIdx]) {
+                    temperatureZone.GetComponent<Tilemap>().color = new Color(0, 234, 255);
                     temperatureZone.zoneType = ZoneType.Cooler;
                 }
             }
