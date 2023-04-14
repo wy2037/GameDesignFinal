@@ -179,6 +179,7 @@ MonoBehaviour:
   leftPressed: {fileID: 0}
   midPressed: {fileID: 0}
   rightPressed: {fileID: 0}
+  isEnabled: 0
   activatedKeyNum: 0
 --- !u!1 &34518631
 GameObject:
@@ -876,7 +877,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1946532057
   m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -801956876, guid: 7da49670d40dbd742a88bcefa0e46b1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1235,7 +1236,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1946532057
   m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 933705501, guid: 7da49670d40dbd742a88bcefa0e46b1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1895,7 +1896,7 @@ MonoBehaviour:
   maxFallVelocity: 7.6
   solidToLiquid: 0
   liquidToGas: 100
-  rotateDuration: 0.26
+  rotateDuration: 0.2
   afkCooldown: 10
   curAfkCooldown: 0
   solidSprite: {fileID: 1192946590, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
@@ -64602,7 +64603,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1946532057
   m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -254791505, guid: 7da49670d40dbd742a88bcefa0e46b1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

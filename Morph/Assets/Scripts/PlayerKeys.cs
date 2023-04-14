@@ -6,6 +6,7 @@ using System.Linq;
 public class PlayerKeys : MonoBehaviour
 {
     [SerializeField] private Transform left, mid, right, leftPressed, midPressed, rightPressed;
+    [SerializeField] private bool isEnabled;
 
     private Transform _player;
     private PlayerController _pc;
@@ -15,9 +16,10 @@ public class PlayerKeys : MonoBehaviour
 
     private HashSet<KeyCode> keysHori = new HashSet<KeyCode>{ KeyCode.A, KeyCode.D };
     private HashSet<KeyCode> keysVerti = new HashSet<KeyCode>{ KeyCode.W, KeyCode.S};
-    int horiNum = 0, VertiNum = 0;
+    int horiNum = 0, vertiNum = 0;
     void Start()
     {
+        
         _player = transform.parent;
         _pc = _player.GetComponent<PlayerController>();
         left = transform.Find("left");
@@ -26,6 +28,7 @@ public class PlayerKeys : MonoBehaviour
         leftPressed = transform.Find("left_pressed");
         midPressed = transform.Find("middle_pressed");
         rightPressed = transform.Find("right_pressed");
+        isEnabled = true;
 
         
     }
@@ -40,8 +43,8 @@ public class PlayerKeys : MonoBehaviour
             if(Input.GetKeyUp(key)) --horiNum;
         }
         foreach(var key in keysVerti){
-            if(Input.GetKeyDown(key)) ++horiNum;
-            if(Input.GetKeyUp(key)) --horiNum;
+            if(Input.GetKeyDown(key)) ++vertiNum;
+            if(Input.GetKeyUp(key)) --vertiNum;
         }
 
         //Debug.Log($"key: {horiNum} {VertiNum}");
@@ -49,6 +52,7 @@ public class PlayerKeys : MonoBehaviour
 
             case State.Solid:
                 if(!midPressed.gameObject.activeSelf && !mid.gameObject.activeSelf) midPressed.gameObject.SetActive(true);
+                if(transform.localPosition.y != -0.64) transform.localPosition = new Vector3(0f, -0.64f, 0f);
 
                 if(Input.GetKeyDown(KeyCode.Space)){
                     Debug.Log("space press");
@@ -75,7 +79,7 @@ public class PlayerKeys : MonoBehaviour
                 break;
             case State.Gas:
                 if(!midPressed.gameObject.activeSelf && !mid.gameObject.activeSelf) midPressed.gameObject.SetActive(true);
-
+                if(transform.localPosition.y != 0.32f) transform.localPosition = new Vector3(0f, 0.32f, 0f);
                 switch (horiNum){
                     case 0:
                         releaseLeft();
@@ -97,8 +101,48 @@ public class PlayerKeys : MonoBehaviour
                 }
                 break;
             case State.Liquid:
-                if(midPressed.gameObject.activeSelf) midPressed.gameObject.SetActive(false);
-                if(mid.gameObject.activeSelf) mid.gameObject.SetActive(false);
+                if(_pc.isRotating && isEnabled){
+                    isEnabled = false;
+                    disableAll();
+                }else if(!_pc.isRotating && !isEnabled){
+                    isEnabled = true;
+                }
+
+                if(isEnabled){
+                    if(midPressed.gameObject.activeSelf) midPressed.gameObject.SetActive(false);
+                    if(mid.gameObject.activeSelf) mid.gameObject.SetActive(false);
+                    if(_pc.isHorizontal){
+                        switch (horiNum){
+                            case 0:
+                                releaseLeft();
+                                releaseRight();
+                                break;
+                            case 1:
+                                pressRight();
+                                releaseLeft();
+                                break;
+                            case 2:
+                                pressRight();
+                                pressLeft();
+                                break;
+                        }
+                    }else{
+                        switch (vertiNum){
+                            case 0:
+                                releaseLeft();
+                                releaseRight();
+                                break;
+                            case 1:
+                                pressRight();
+                                releaseLeft();
+                                break;
+                            case 2:
+                                pressRight();
+                                pressLeft();
+                                break;
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -134,5 +178,21 @@ public class PlayerKeys : MonoBehaviour
     void releaseRight(){
         rightPressed.gameObject.SetActive(false);
         right.gameObject.SetActive(true);
+    }
+
+    void disableAll(){
+        left.gameObject.SetActive(false);
+        leftPressed.gameObject.SetActive(false);
+        mid.gameObject.SetActive(false);
+        midPressed.gameObject.SetActive(false);
+        right.gameObject.SetActive(false);
+        rightPressed.gameObject.SetActive(false);
+    }
+
+    void enableLiquid(){
+        left.gameObject.SetActive(true);
+        leftPressed.gameObject.SetActive(true);
+        right.gameObject.SetActive(true);
+        rightPressed.gameObject.SetActive(true);
     }
 }
