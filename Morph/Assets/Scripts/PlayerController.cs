@@ -24,8 +24,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isFalling;
     [SerializeField] private bool isWallHit;
     [SerializeField] private bool isCornerMet;
-    [SerializeField] private bool isRotating;
-    [SerializeField] private bool isHorizontal;
+    [SerializeField] public bool isRotating;
+    [SerializeField] public bool isHorizontal;
     [SerializeField] private bool isEnabled;
 
     [SerializeField] private State previousState;
