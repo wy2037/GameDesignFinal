@@ -101,6 +101,7 @@ public class PlayerKeys : MonoBehaviour
                 }
                 break;
             case State.Liquid:
+                if(transform.localPosition.y != -0.64) transform.localPosition = new Vector3(0f, -0.64f, 0f);
                 if(_pc.isRotating && isEnabled){
                     isEnabled = false;
                     disableAll();
