@@ -11,7 +11,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Tutorial.unity
     guid: 3df8ccbebb7a84169910f76acd0ce58b
-  - enabled: 1
-    path: Assets/Scenes/TempControllerTest.unity
-    guid: b15add0ed4617a74fbc5236436a878b9
   m_configObjects: {}
