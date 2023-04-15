@@ -14,9 +14,9 @@ public enum ZoneType{
 
 public class TemperatureZone : MonoBehaviour
 {
-    [SerializeField] private float zoneTemperature;
+    [SerializeField] public float zoneTemperature;
     [SerializeField] private float multiplier;
-    [SerializeField] private ZoneType zoneType;
+    [SerializeField] public ZoneType zoneType;
     [SerializeField] float maxCooldown, cooldown = 0;
     private Tilemap _tilemap;
 
@@ -42,7 +42,7 @@ public class TemperatureZone : MonoBehaviour
         initializeZone();
     }
 
-    private void initializeZone(){
+    public void initializeZone(){
         switch (zoneType){
             case ZoneType.HeaterMid:
                 _tilemap.color = heaterMidColor;
