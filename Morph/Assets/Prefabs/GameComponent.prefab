@@ -228,7 +228,7 @@ MonoBehaviour:
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
   coolerLowColor: {r: 0, g: 0.20609975, b: 1, a: 1}
-  labelPrefab: {fileID: 0}
+  labelPrefab: {fileID: 5032923368973963539, guid: 89d8b9610be54e74d8a626982442fb1f, type: 3}
 --- !u!483693784 &5104598017519024438
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -470,7 +470,7 @@ MonoBehaviour:
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
   coolerLowColor: {r: 0, g: 0.20609975, b: 1, a: 1}
-  labelPrefab: {fileID: 0}
+  labelPrefab: {fileID: 5032923368973963539, guid: 89d8b9610be54e74d8a626982442fb1f, type: 3}
 --- !u!483693784 &5104598017537751019
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -7182,7 +7182,7 @@ MonoBehaviour:
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
   coolerLowColor: {r: 0, g: 0.20609975, b: 1, a: 1}
-  labelPrefab: {fileID: 0}
+  labelPrefab: {fileID: 5032923368973963539, guid: 89d8b9610be54e74d8a626982442fb1f, type: 3}
 --- !u!50 &5104598018921360268
 Rigidbody2D:
   serializedVersion: 4
@@ -7725,7 +7725,7 @@ MonoBehaviour:
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
   coolerLowColor: {r: 0, g: 0.20609975, b: 1, a: 1}
-  labelPrefab: {fileID: 0}
+  labelPrefab: {fileID: 5032923368973963539, guid: 89d8b9610be54e74d8a626982442fb1f, type: 3}
 --- !u!50 &5104598019164308230
 Rigidbody2D:
   serializedVersion: 4

@@ -27,7 +27,7 @@ public class TemperatureZone : MonoBehaviour
 
 
     public Transform labelPrefab;
-    private List<Transform> labelLocations;
+    private List<Transform> labelLocations = new List<Transform>{};
 
     private void Awake() {
 
@@ -39,7 +39,14 @@ public class TemperatureZone : MonoBehaviour
         foreach (Transform child in transform){
             labelLocations.Add(child);
         }
+        foreach (var l in labelLocations){
+            GameObject obj = Instantiate(labelPrefab.gameObject, l.position, Quaternion.identity);
+            obj.GetComponent<StateIndicator>().temperatureZone = this;
+        }
         initializeZone();
+
+
+
     }
 
     public void initializeZone(){

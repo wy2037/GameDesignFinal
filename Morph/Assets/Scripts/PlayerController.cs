@@ -107,39 +107,48 @@ public class PlayerController : MonoBehaviour
     }
     private void Update() {
         if(Input.GetKeyDown(KeyCode.Alpha0)) SceneManager.LoadScene(0);
+        if(stateFlag){
+            // temperate way of switching state
+            if(Input.GetKeyDown(KeyCode.Z)){
+                solidInit();
+            }
+            else if (Input.GetKeyDown(KeyCode.X)){
+                liquidInit();
+            }
+            else if (Input.GetKeyDown(KeyCode.C)){
+                gasInit();
+            }
+            else if(Input.GetKeyDown(KeyCode.V)){
+                StartCoroutine(liquidDrop2());
+            }
+        }else{
+            // switch (temperatureToState(PlayerData.Pd.temperature)){
+            //     case State.Solid:
+            //         if(PlayerData.Pd.state != State.Solid) solidInit();
+            //         break;
+            //     case State.Liquid:
+            //         if(PlayerData.Pd.state != State.Liquid) liquidInit();
+            //         break;
+            //     case State.Gas:
+            //         if(PlayerData.Pd.state != State.Gas) gasInit();
+            //         break;
+            // }
+            if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
+                solidInit();
+            }
+            else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
+                liquidInit();
+            }
+            else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
+                gasInit();
+            }
+            else if(Input.GetKeyDown(KeyCode.V)){
+                StartCoroutine(liquidDrop2());
+            }
+        }
         if(isEnabled){
-            if(Input.GetKeyDown(KeyCode.F)){
-                stateFlag = !stateFlag;
-            }
 
-            if(stateFlag){
-                // temperate way of switching state
-                if(Input.GetKeyDown(KeyCode.Z)){
-                    solidInit();
-                }
-                else if (Input.GetKeyDown(KeyCode.X)){
-                    liquidInit();
-                }
-                else if (Input.GetKeyDown(KeyCode.C)){
-                    gasInit();
-                }
-                else if(Input.GetKeyDown(KeyCode.V)){
-                    StartCoroutine(liquidDrop2());
-                }
-            }else{
-                if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
-                    solidInit();
-                }
-                else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
-                    liquidInit();
-                }
-                else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
-                    gasInit();
-                }
-                else if(Input.GetKeyDown(KeyCode.V)){
-                    StartCoroutine(liquidDrop2());
-                }
-            }
+
 
             switch(PlayerData.Pd.state){
                 case State.Solid:
@@ -190,6 +199,19 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    public State temperatureToState(float temp){
+        if(PlayerData.Pd.temperature <= solidToLiquid){
+            return State.Solid;
+        }
+        else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
+            return State.Liquid;
+        }
+        else if (PlayerData.Pd.temperature > liquidToGas){
+            return State.Gas;
+        }
+        return State.Solid;
+    }
+
     void solidInit(){
         PlayerData.Pd.state = State.Solid;
         this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
@@ -200,6 +222,9 @@ public class PlayerController : MonoBehaviour
         switch (previousState){
             case State.Liquid:
                 _ani.SetTrigger("LiquidToSolid");
+                break;
+            case State.Solid:
+                _ani.SetTrigger("StartScene");
                 break;
         }
         previousState = State.Solid;
@@ -231,6 +256,9 @@ public class PlayerController : MonoBehaviour
             case State.Gas:
                 _ani.SetTrigger("GasToLiquid");
                 break;
+            case State.Liquid:
+                _ani.SetTrigger("StartScene");
+                break;
         }
 
         
@@ -256,6 +284,9 @@ public class PlayerController : MonoBehaviour
         switch (previousState){
             case State.Liquid:
                 _ani.SetTrigger("LiquidToGas");
+                break;
+            case State.Gas:
+                _ani.SetTrigger("StartScene");
                 break;
 
         }
@@ -573,8 +604,22 @@ public class PlayerController : MonoBehaviour
         // after moving
         transform.rotation = Quaternion.identity;
         PlayerData.Pd.temperature = PlayerData.Pd.lastCheckedTemperature;
+        PlayerData.Pd.state = temperatureToState(PlayerData.Pd.temperature);
+        switch (PlayerData.Pd.state){
+            case State.Solid:
+                solidInit();
+                break;
+            case State.Liquid:
+                liquidInit();
+                break;
+            case State.Gas:
+                gasInit();
+                break;
+        }
         _ani.SetTrigger("StartScene");
         _sr.color = Color.white;
+        _col.enabled = true;
+        
 
         for (int i = 0; i < 3; i++)
         {
@@ -588,7 +633,6 @@ public class PlayerController : MonoBehaviour
         _rb.isKinematic = false;
         // enable
         _rb.velocity = Vector2.zero;
-        _col.enabled = true;
         if(PlayerData.Pd.state == State.Liquid) StartCoroutine(liquidDrop2());
     }
 
