@@ -30,7 +30,6 @@ public class PlayerData : MonoBehaviour
     [Header("Level Settings")]
     public List<float> levelRoomTemperatures;
     public List<float> levelPlayerTemperatures;
-    public List<Vector2> levelPlayerPostion;
     public RoomTemperature roomTemperature;
 
 
@@ -59,11 +58,16 @@ public class PlayerData : MonoBehaviour
         // Player Data
         player = GameObject.FindGameObjectWithTag("Player").transform;
         temperature = levelPlayerTemperatures[levelIndex];
-        player.position = levelPlayerPostion[levelIndex];
+        //player.position = levelPlayerPostion[levelIndex];
 
         // Level Data
-        roomTemperature = GameObject.FindWithTag("RoomTemperature").GetComponent<RoomTemperature>();
-        roomTemperature.roomTemperature = levelRoomTemperatures[levelIndex];
+        try{
+            roomTemperature = GameObject.FindWithTag("RoomTemperature").GetComponent<RoomTemperature>();
+            roomTemperature.roomTemperature = levelRoomTemperatures[levelIndex];
+        }
+        catch{
+            Debug.Log("no room temperature");
+        }
     }
 
     
@@ -77,6 +81,12 @@ public class PlayerData : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R)){
             string curScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(curScene);
+        }
+        else if (Input.GetKeyDown(KeyCode.Q)){
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.Z)){
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
         }
     }
 

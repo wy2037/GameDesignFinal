@@ -15,7 +15,7 @@ public class Spike : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && PlayerData.Pd.state == State.Solid) {
             Debug.Log("Solid player hit spike!");
             // Call function in player to damage
-            StartCoroutine(die());
+            StartCoroutine(_player.GetComponent<PlayerController>().die());
         }
     }
 
@@ -61,6 +61,7 @@ public class Spike : MonoBehaviour
         _player.GetComponent<Rigidbody2D>().isKinematic = false;
         _player.GetComponent<PlayerController>().enabled = true;
         _player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        _player.rotation = Quaternion.identity;
 
         
     }

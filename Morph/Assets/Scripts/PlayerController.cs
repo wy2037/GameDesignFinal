@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private Transform feet;
     private Transform right;
     private Transform center;
+    private Transform front;
+    private Transform back;
 
     // bool
     [Header("status")]
@@ -21,8 +24,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isFalling;
     [SerializeField] private bool isWallHit;
     [SerializeField] private bool isCornerMet;
-    [SerializeField] private bool isRotating;
-    [SerializeField] private bool isHorizontal;
+    [SerializeField] public bool isRotating;
+    [SerializeField] public bool isHorizontal;
+    [SerializeField] private bool isEnabled;
+
+    [SerializeField] private State previousState;
 
     // data
     [Header("PlayerData")]
@@ -36,7 +42,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int liquidToGas;
 
     // float
-    public float rotateThreshold = 1.4f;
     public float rotateDuration = 0.2f;
     public float afkCooldown;
     [SerializeField] private float curAfkCooldown;
@@ -61,13 +66,16 @@ public class PlayerController : MonoBehaviour
 
     
     private void Awake() {
+
         // get children
         head = transform.Find("head");
         center = transform.Find("center");
         feet = transform.Find("feet");
         right = transform.Find("right");
+        front = transform.Find("front");
+        back = transform.Find("back");
 
-        distanceToSurface = Vector2.Distance(center.position, feet.position);
+        distanceToSurface = Vector2.Distance(transform.position, feet.position);
 
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
@@ -75,6 +83,7 @@ public class PlayerController : MonoBehaviour
         _ani = GetComponent<Animator>();
 
         // bool
+        isEnabled = true;
         _rb.isKinematic = false;
         isHorizontal = true; 
         stateFlag = false;
@@ -84,14 +93,20 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Start() {
-        solidInit();
+        _ani.SetTrigger("StartScene");
+        if(PlayerData.Pd.temperature <= solidToLiquid){
+            solidInit();
+        }
+        else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
+            liquidInit();
+        }
+        else if (PlayerData.Pd.temperature > liquidToGas){
+            gasInit();
+        }
         curAfkCooldown = afkCooldown;
     }
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.F)){
-            stateFlag = !stateFlag;
-        }
-
+        if(Input.GetKeyDown(KeyCode.Alpha0)) SceneManager.LoadScene(0);
         if(stateFlag){
             // temperate way of switching state
             if(Input.GetKeyDown(KeyCode.Z)){
@@ -107,6 +122,17 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(liquidDrop2());
             }
         }else{
+            // switch (temperatureToState(PlayerData.Pd.temperature)){
+            //     case State.Solid:
+            //         if(PlayerData.Pd.state != State.Solid) solidInit();
+            //         break;
+            //     case State.Liquid:
+            //         if(PlayerData.Pd.state != State.Liquid) liquidInit();
+            //         break;
+            //     case State.Gas:
+            //         if(PlayerData.Pd.state != State.Gas) gasInit();
+            //         break;
+            // }
             if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
                 solidInit();
             }
@@ -120,56 +146,90 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(liquidDrop2());
             }
         }
+        if(isEnabled){
 
-        switch(PlayerData.Pd.state){
-            case State.Solid:
-            {
-                solidControl();
-                break;
+
+
+            switch(PlayerData.Pd.state){
+                case State.Solid:
+                {
+                    solidControl();
+                    break;
+                }
+                case State.Liquid:
+                {
+                    liquidControl();
+                    break;
+                }
+                case State.Gas:
+                {
+                    gasControl();
+                    break;
+                }
+                
             }
-            case State.Liquid:
-            {
-                liquidControl();
-                break;
+
+            // afk
+            curAfkCooldown -= Time.deltaTime;
+            if( inputX != 0 || inputY != 0 ){
+                //_ani.SetTrigger("AFK");
+                curAfkCooldown = afkCooldown;
             }
-            case State.Gas:
-            {
-                gasControl();
-                break;
+            if(curAfkCooldown < 0){
+                _ani.SetTrigger("AFK");
+                curAfkCooldown = afkCooldown;
             }
+
+            // debug
+            checkAttached();
+            checkCeiling();
+            checkCorner();
+            Debug.DrawRay(front.position, (-transform.right * localDirection - transform.up).normalized * 0.5f,
+                Color.green
+                );
+            Debug.DrawRay(back.position, (transform.right * localDirection - transform.up).normalized * 0.5f,
+                Color.blue
+                );
+
+            Debug.DrawRay(front.position, -transform.up * 0.2f, Color.cyan);
+            Debug.DrawRay(back.position, -transform.up * 0.2f, Color.cyan);
+            Debug.DrawRay(feet.position, -transform.up * 0.05f, Color.cyan);
             
         }
-
-        // afk
-        curAfkCooldown -= Time.deltaTime;
-        if( inputX != 0 || inputY != 0 ){
-            //_ani.SetTrigger("AFK");
-            curAfkCooldown = afkCooldown;
-        }
-        if(curAfkCooldown < 0){
-            _ani.SetTrigger("AFK");
-            curAfkCooldown = afkCooldown;
-        }
-        //Debug.Log($"clip: {_ani.GetCurrentAnimatorClipInfo(0)[0]}");
-
-        // debug
-        checkAttached();
-        checkCeiling();
-        checkCorner();
-        Debug.DrawRay(feet.position + transform.right * localDirection * 0.18f, 
-            (-transform.right * localDirection - transform.up).normalized * 0.35f,
-            Color.green
-            );
     }
 
 
+    public State temperatureToState(float temp){
+        if(PlayerData.Pd.temperature <= solidToLiquid){
+            return State.Solid;
+        }
+        else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
+            return State.Liquid;
+        }
+        else if (PlayerData.Pd.temperature > liquidToGas){
+            return State.Gas;
+        }
+        return State.Solid;
+    }
+
     void solidInit(){
         PlayerData.Pd.state = State.Solid;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
+        // animation
         _ani.SetBool("Solid", true);
         _ani.SetBool("Gas", false);
         _ani.SetBool("Liquid", false);
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
-        //_sr.sprite = solidSprite;
+        switch (previousState){
+            case State.Liquid:
+                _ani.SetTrigger("LiquidToSolid");
+                break;
+            case State.Solid:
+                _ani.SetTrigger("StartScene");
+                break;
+        }
+        previousState = State.Solid;
+
+
 
         _col.offset = new Vector2(0,-0.15f);
         _col.size = new Vector2(0.64f,0.66f);
@@ -183,26 +243,54 @@ public class PlayerController : MonoBehaviour
     }
     void liquidInit(){
         PlayerData.Pd.state = State.Liquid;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
+
+        // animation
         _ani.SetBool("Liquid", true);
         _ani.SetBool("Solid", false);
         _ani.SetBool("Gas", false);
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerL");
-        //_sr.sprite = liquidSprite;
+        switch (previousState){
+            case State.Solid:
+                _ani.SetTrigger("SolidToLiquid");
+                break;
+            case State.Gas:
+                _ani.SetTrigger("GasToLiquid");
+                break;
+            case State.Liquid:
+                _ani.SetTrigger("StartScene");
+                break;
+        }
+
         
         _col.offset = new Vector2(0,-0.27f);
         _col.size = new Vector2(0.64f,0.41f);
 
         _rb.isKinematic = false;
+
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        StartCoroutine(liquidDrop2());
+
+        if(previousState == State.Gas) StartCoroutine(liquidRaise());
+        else if(previousState == State.Solid) StartCoroutine(liquidDrop2());
+        
+        previousState = State.Liquid;
     }
     void gasInit(){
         PlayerData.Pd.state = State.Gas;
+        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
+        // animation
         _ani.SetBool("Gas", true);
         _ani.SetBool("Liquid", false);
         _ani.SetBool("Solid", false);
-        this.gameObject.layer = LayerMask.NameToLayer("PlayerG");
-        //_sr.sprite = gasSprite;
+        switch (previousState){
+            case State.Liquid:
+                _ani.SetTrigger("LiquidToGas");
+                break;
+            case State.Gas:
+                _ani.SetTrigger("StartScene");
+                break;
+
+        }
+        previousState = State.Gas;
 
         _col.offset = new Vector2(0,-0.06f);
         _col.size = new Vector2(0.6f, 0.46f);
@@ -242,7 +330,7 @@ public class PlayerController : MonoBehaviour
     void liquidControl(){
         //initiate
         if(isRotating) return;
-        if(Input.GetKeyDown(KeyCode.Space)) StartCoroutine(liquidDrop2());
+        // if(Input.GetKeyDown(KeyCode.Space)) StartCoroutine(liquidDrop2());
         if(!isFalling){
             _rb.gravityScale = 0;
             _rb.velocity = Vector2.zero;
@@ -256,7 +344,9 @@ public class PlayerController : MonoBehaviour
 
         changeDirection();
         Vector2 wallHitPos = checkWall();
-        Vector2 cornerHitPos = checkCorner();
+        // Vector2 cornerHitPos = checkCorner();
+        bool isFront = true;
+        Vector2 cornerHitPos = checkCorner2(ref isFront);
         checkAttached();
         _ani.SetBool("Grounded", isAttached);
         // wall rotate
@@ -264,77 +354,69 @@ public class PlayerController : MonoBehaviour
             isRotating = true;
             isHorizontal = !isHorizontal;
 
-            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface * rotateThreshold + wallHitPos;
+            Vector2 endCenter = ((Vector2)center.position - wallHitPos).normalized * distanceToSurface + wallHitPos;
 
-            Debug.Log(endCenter);
-            transform.position = endCenter;
-            transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
-            isRotating = false;
-            isWallHit = false;
-            // transform
-            // .DOMove(
-            //     endCenter,
-            //     rotateDuration
-            // );
-            // transform
-            // .DOLocalRotate(
-            //     new Vector3(0, 0, 90 * localDirection),
-            //     rotateDuration
-            // )
-            // .SetRelative()
-            // .OnComplete(()=>{
-            //     isRotating = false;
-            //     isWallHit = false;
-
-                
-            // });
+            // transform.position = endCenter;
+            // transform.eulerAngles += new Vector3(0, 0, 90 * localDirection);
+            // isRotating = false;
+            // isWallHit = false;
+            transform
+            .DOMove(
+                endCenter,
+                rotateDuration
+            );
+            transform
+            .DOLocalRotate(
+                new Vector3(0, 0, 90 * localDirection),
+                rotateDuration
+            )
+            .SetRelative()
+            .OnComplete(()=>{
+                isRotating = false;
+                isWallHit = false;
+                if(PlayerData.Pd.state == State.Solid || PlayerData.Pd.state == State.Gas) transform.rotation = Quaternion.identity;
+            });
         }
         // corner rotate
         if(cornerHitPos != Vector2.zero & !isRotating && !isFalling){
             isRotating = true;
             isHorizontal = !isHorizontal;
-            Vector2 endCenter = (Vector2)transform.right * (localDirection) * distanceToSurface  * rotateThreshold + cornerHitPos;
+            Vector2 endCenter =  ((isFront)? 1:-1) * (Vector2)transform.right * (localDirection) * distanceToSurface * 1.01f  + cornerHitPos;
+            Debug.Log(endCenter);
             
-            //_col.enabled = false;
 
-            transform.position = endCenter;
-            transform.eulerAngles += new Vector3(0, 0, -90 * localDirection);
             checkAttached();
-            isRotating = false;
-            isCornerMet = false;
-
-
-            // Sequence sq = DOTween.Sequence();
-            // sq
-            // .SetId("corner rotate")
-            // .OnStart(()=>{
-            //     transform
-            //     .DOMove(
-            //         endCenter,
-            //         rotateDuration
-            //     );
-            //     transform
-            //     .DOLocalRotate(
-            //         new Vector3(0, 0, -90 * localDirection),
-            //         rotateDuration
-            //     )
-            //     .SetRelative()
-            //     .OnComplete(()=>{
-            //         checkAttached();
-            //         isRotating = false;
-            //         isCornerMet = false;
-            //         //_col.enabled = true;
-            //     });
-            // })
-            // .AppendInterval(0.6f)
-            // .OnComplete(()=>{
+            Sequence sq = DOTween.Sequence();
+            sq
+            .SetId("corner rotate")
+            .OnStart(()=>{
+                transform
+                .DOMove(
+                    endCenter,
+                    rotateDuration
+                );
+                transform
+                .DOLocalRotate(
+                    new Vector3(0, 0, ((isFront)? 1 : -1) * -90 * localDirection),
+                    rotateDuration
+                )
+                .SetRelative()
+                .OnComplete(()=>{
+                    checkAttached();
+                    isRotating = false;
+                    isCornerMet = false;
+                    if(PlayerData.Pd.state == State.Solid || PlayerData.Pd.state == State.Gas) transform.rotation = Quaternion.identity;
+                });
+            })
+            .AppendInterval(rotateDuration + 0.1f)
+            .OnComplete(()=>{
                 
-            // });
+            });
         }
 
-        if(!isFalling && !checkAttached()){
-            StartCoroutine(liquidDrop2());
-        }
+        // if(!isFalling && !checkAttached()){
+        //     StartCoroutine(liquidDrop2());
+        // }
 
         // movement
         if(!isRotating){
@@ -396,17 +478,14 @@ public class PlayerController : MonoBehaviour
     }
 
     bool checkAttached(){
-        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.1f, groundLayer);
-        //if(isAttached) _ani.ResetTrigger("Jump");
+        isAttached = Physics2D.Raycast(feet.position, -transform.up, 0.05f, groundLayer);
         return isAttached;
     }
 
     bool checkCeiling(){
         isCeiling = Physics2D.Raycast(head.position, transform.up, 0.05f, groundLayer);
-        //if(isAttached) _ani.ResetTrigger("Jump");
         return isCeiling;
     }
-
     Vector2 checkWall(){
         if(isRotating) return Vector2.zero;
         
@@ -432,6 +511,43 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    Vector2 checkCorner2(ref bool isFront){
+        if(isRotating || _rb.gravityScale != 0) return Vector2.zero;
+        RaycastHit2D hit = new RaycastHit2D();
+        RaycastHit2D frontHit = new RaycastHit2D();
+        RaycastHit2D backHit = new RaycastHit2D();
+        if(!checkAttached()){
+            frontHit = Physics2D.Raycast(front.position, -transform.up, 0.2f, groundLayer);
+            backHit = Physics2D.Raycast(back.position, -transform.up, 0.2f, groundLayer);
+            Debug.Log($"{frontHit.point}   {backHit.point}");
+            if(!frontHit && backHit) isFront = true;
+            if(frontHit && !backHit) isFront = false;
+            Debug.Log(isFront);
+            // if(!frontHit && !backHit){
+            //     StartCoroutine(liquidDrop2());
+            //     return Vector2.zero;
+            // }
+            if(isFront) hit = Physics2D.Raycast(front.position, (-transform.right * localDirection - transform.up).normalized, 0.5f, groundLayer);
+            Debug.Log(hit.point);
+            if(!isFront) hit = Physics2D.Raycast(back.position, (transform.right * localDirection - transform.up).normalized, 0.5f, groundLayer);
+            Debug.Log(hit.point);
+            // hit = (frontHit)? Physics2D.Raycast(
+            //         front.position, 
+            //         (-transform.right * localDirection - transform.up).normalized, 
+            //         0.5f, 
+            //         groundLayer
+            //     ):Physics2D.Raycast(
+            //         back.position,
+            //         (transform.right * localDirection - transform.up).normalized, 
+            //         0.5f, 
+            //         groundLayer
+            //     );
+            
+            isCornerMet = ((frontHit && !backHit) || (!frontHit && backHit)) ? true : false;
+            Debug.Log($"corner: {hit.point}");
+        }
+        return (isCornerMet) ? hit.point : Vector2.zero; 
+    }
     public IEnumerator liquidDrop2(){
         if(!isFalling){
             isFalling = true;
@@ -444,6 +560,83 @@ public class PlayerController : MonoBehaviour
             
         }
     }
+
+    public IEnumerator liquidRaise(){
+        if(!isFalling){
+            isFalling = true;
+            Debug.Log("inverse");
+            transform.position -= new Vector3(0, distanceToSurface, 0);
+            transform.rotation = Quaternion.Euler(0, 0, 180f);
+            isHorizontal = true;
+            _rb.gravityScale = -PlayerData.Pd.gravityScale;
+            yield return new WaitUntil(()=>(checkAttached()));
+            _rb.gravityScale = 0f;
+            isFalling = false;
+        }
+    }
+
+    public IEnumerator die(){
+        //_player.GetComponent<PlayerController>().enabled = false;
+        _rb.isKinematic = true;
+        _rb.velocity = Vector2.zero;
+        _col.enabled = false;
+        isEnabled = false;
+
+        _sr.color = Color.red;
+        _sr
+        .DOFade(
+            0,
+            1f
+        );
+
+        transform
+        .DOLocalJump(
+            Vector3.right * (Random.Range(0, 1) == 1? 1 : -1),
+            1,
+            1,
+            1f
+        )
+        .SetRelative();
+
+        yield return new WaitForSeconds(1.1f);
+        transform.position = PlayerData.Pd.lastCheckedPosition;
+
+        // after moving
+        transform.rotation = Quaternion.identity;
+        PlayerData.Pd.temperature = PlayerData.Pd.lastCheckedTemperature;
+        PlayerData.Pd.state = temperatureToState(PlayerData.Pd.temperature);
+        switch (PlayerData.Pd.state){
+            case State.Solid:
+                solidInit();
+                break;
+            case State.Liquid:
+                liquidInit();
+                break;
+            case State.Gas:
+                gasInit();
+                break;
+        }
+        _ani.SetTrigger("StartScene");
+        _sr.color = Color.white;
+        _col.enabled = true;
+        
+
+        for (int i = 0; i < 3; i++)
+        {
+            _sr.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(0.2f);
+            _sr.color = new Color(1, 1, 1, 0);
+            yield return new WaitForSeconds(0.2f);
+        }
+        isEnabled = true;
+        _sr.color = new Color(1, 1, 1, 1);
+        _rb.isKinematic = false;
+        // enable
+        _rb.velocity = Vector2.zero;
+        if(PlayerData.Pd.state == State.Liquid) StartCoroutine(liquidDrop2());
+    }
+
+
 
 
     private void OnDestroy() {
