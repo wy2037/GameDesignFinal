@@ -10776,6 +10776,8 @@ MonoBehaviour:
   curAfkCooldown: 0
   coyoteTime: 0.2
   curCoyoteTime: 0
+  jumpBufferTime: 0.2
+  curJumpBufferTime: 0
   solidSprite: {fileID: 1192946590, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
   liquidSprite: {fileID: -60784255, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}
   gasSprite: {fileID: 1719577913, guid: d5a780eac5d9bc8448a8cdef2b080d8f, type: 3}

@@ -47,6 +47,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float curAfkCooldown;
     [SerializeField] private float coyoteTime = 0.2f;
     [SerializeField] private float curCoyoteTime;
+    [SerializeField] private float jumpBufferTime = 0.2f;
+    [SerializeField] private float curJumpBufferTime;
 
 
     // sprite
@@ -188,6 +190,13 @@ public class PlayerController : MonoBehaviour
                     break;
             }
 
+            // jumpbuffer
+            if(Input.GetKeyDown(KeyCode.Space)){
+                curJumpBufferTime = jumpBufferTime;
+            }else{
+                curJumpBufferTime -= Time.deltaTime;
+            }
+
 
             // debug
             checkAttached();
@@ -324,14 +333,16 @@ public class PlayerController : MonoBehaviour
         }
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Max(inputY, -maxFallVelocity));
-        if(curCoyoteTime > 0f && Input.GetKeyDown(KeyCode.Space)){
+        if(curCoyoteTime > 0f && curJumpBufferTime > 0f){
             _ani.SetBool("Grounded", isAttached);
             _ani.SetTrigger("Jump");
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
+            curJumpBufferTime = 0f;
         }
         if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y > 0f){
             _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
+            curCoyoteTime = 0f;
         }
 
 
@@ -464,13 +475,15 @@ public class PlayerController : MonoBehaviour
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Min(_rb.velocity.y, maxFallVelocity));
-        if(curCoyoteTime > 0f && Input.GetKeyDown(KeyCode.Space)){
+        if(curCoyoteTime > 0f && curJumpBufferTime > 0f){
             _ani.SetBool("Grounded", isCeiling);
             _ani.SetTrigger("Jump");
             _rb.velocity += new Vector2(0, -PlayerData.Pd.jumpForce);
+            curJumpBufferTime = 0f;
         }
         if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y < 0f){
             _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
+            curCoyoteTime = 0f;
         }
 
         _ani.SetBool("Grounded", isCeiling);
