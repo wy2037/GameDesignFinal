@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
     public float rotateDuration = 0.2f;
     public float afkCooldown;
     [SerializeField] private float curAfkCooldown;
+    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float curCoyoteTime;
+
 
     // sprite
     [Header("Sprite")]
@@ -122,17 +125,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(liquidDrop2());
             }
         }else{
-            // switch (temperatureToState(PlayerData.Pd.temperature)){
-            //     case State.Solid:
-            //         if(PlayerData.Pd.state != State.Solid) solidInit();
-            //         break;
-            //     case State.Liquid:
-            //         if(PlayerData.Pd.state != State.Liquid) liquidInit();
-            //         break;
-            //     case State.Gas:
-            //         if(PlayerData.Pd.state != State.Gas) gasInit();
-            //         break;
-            // }
             if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
                 solidInit();
             }
@@ -147,9 +139,6 @@ public class PlayerController : MonoBehaviour
             }
         }
         if(isEnabled){
-
-
-
             switch(PlayerData.Pd.state){
                 case State.Solid:
                 {
@@ -168,7 +157,7 @@ public class PlayerController : MonoBehaviour
                 }
                 
             }
-
+            //// counter
             // afk
             curAfkCooldown -= Time.deltaTime;
             if( inputX != 0 || inputY != 0 ){
@@ -179,6 +168,26 @@ public class PlayerController : MonoBehaviour
                 _ani.SetTrigger("AFK");
                 curAfkCooldown = afkCooldown;
             }
+
+            // coyoteTime
+
+            switch(PlayerData.Pd.state){
+                case State.Solid:
+                    if(checkAttached()){
+                        curCoyoteTime = coyoteTime;
+                    }else{
+                        curCoyoteTime -= Time.deltaTime;
+                    }
+                    break;
+                case State.Gas:
+                    if(checkCeiling()){
+                        curCoyoteTime = coyoteTime;
+                    }else{
+                        curCoyoteTime -= Time.deltaTime;
+                    }
+                    break;
+            }
+
 
             // debug
             checkAttached();
@@ -315,11 +324,14 @@ public class PlayerController : MonoBehaviour
         }
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Max(inputY, -maxFallVelocity));
-        if(checkAttached() && Input.GetKeyDown(KeyCode.Space)){
+        if(curCoyoteTime > 0f && Input.GetKeyDown(KeyCode.Space)){
             _ani.SetBool("Grounded", isAttached);
             _ani.SetTrigger("Jump");
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
+        }
+        if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y > 0f){
+            _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
         }
 
 
@@ -452,11 +464,15 @@ public class PlayerController : MonoBehaviour
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Min(_rb.velocity.y, maxFallVelocity));
-        if(checkCeiling() && Input.GetKeyDown(KeyCode.Space)){
+        if(curCoyoteTime > 0f && Input.GetKeyDown(KeyCode.Space)){
             _ani.SetBool("Grounded", isCeiling);
             _ani.SetTrigger("Jump");
             _rb.velocity += new Vector2(0, -PlayerData.Pd.jumpForce);
         }
+        if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y < 0f){
+            _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
+        }
+
         _ani.SetBool("Grounded", isCeiling);
     }
 
