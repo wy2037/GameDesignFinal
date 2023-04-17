@@ -123,9 +123,9 @@ public class PlayerController : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.C)){
                 gasInit();
             }
-            else if(Input.GetKeyDown(KeyCode.V)){
-                StartCoroutine(liquidDrop2());
-            }
+            // else if(Input.GetKeyDown(KeyCode.V)){
+            //     StartCoroutine(liquidDrop2());
+            // }
         }else{
             if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
                 solidInit();
@@ -136,9 +136,9 @@ public class PlayerController : MonoBehaviour
             else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
                 gasInit();
             }
-            else if(Input.GetKeyDown(KeyCode.V)){
-                StartCoroutine(liquidDrop2());
-            }
+            // else if(Input.GetKeyDown(KeyCode.V)){
+            //     StartCoroutine(liquidDrop2());
+            // }
         }
         if(isEnabled){
             switch(PlayerData.Pd.state){
