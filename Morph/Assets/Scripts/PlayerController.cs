@@ -45,6 +45,11 @@ public class PlayerController : MonoBehaviour
     public float rotateDuration = 0.2f;
     public float afkCooldown;
     [SerializeField] private float curAfkCooldown;
+    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float curCoyoteTime;
+    [SerializeField] private float jumpBufferTime = 0.2f;
+    [SerializeField] private float curJumpBufferTime;
+
 
     // sprite
     [Header("Sprite")]
@@ -107,40 +112,35 @@ public class PlayerController : MonoBehaviour
     }
     private void Update() {
         if(Input.GetKeyDown(KeyCode.Alpha0)) SceneManager.LoadScene(0);
+        if(stateFlag){
+            // temperate way of switching state
+            if(Input.GetKeyDown(KeyCode.Z)){
+                solidInit();
+            }
+            else if (Input.GetKeyDown(KeyCode.X)){
+                liquidInit();
+            }
+            else if (Input.GetKeyDown(KeyCode.C)){
+                gasInit();
+            }
+            // else if(Input.GetKeyDown(KeyCode.V)){
+            //     StartCoroutine(liquidDrop2());
+            // }
+        }else{
+            if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
+                solidInit();
+            }
+            else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
+                liquidInit();
+            }
+            else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
+                gasInit();
+            }
+            // else if(Input.GetKeyDown(KeyCode.V)){
+            //     StartCoroutine(liquidDrop2());
+            // }
+        }
         if(isEnabled){
-            if(Input.GetKeyDown(KeyCode.F)){
-                stateFlag = !stateFlag;
-            }
-
-            if(stateFlag){
-                // temperate way of switching state
-                if(Input.GetKeyDown(KeyCode.Z)){
-                    solidInit();
-                }
-                else if (Input.GetKeyDown(KeyCode.X)){
-                    liquidInit();
-                }
-                else if (Input.GetKeyDown(KeyCode.C)){
-                    gasInit();
-                }
-                else if(Input.GetKeyDown(KeyCode.V)){
-                    StartCoroutine(liquidDrop2());
-                }
-            }else{
-                if(PlayerData.Pd.temperature <= solidToLiquid && PlayerData.Pd.state != State.Solid){
-                    solidInit();
-                }
-                else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas && PlayerData.Pd.state != State.Liquid){
-                    liquidInit();
-                }
-                else if (PlayerData.Pd.temperature > liquidToGas && PlayerData.Pd.state != State.Gas){
-                    gasInit();
-                }
-                else if(Input.GetKeyDown(KeyCode.V)){
-                    StartCoroutine(liquidDrop2());
-                }
-            }
-
             switch(PlayerData.Pd.state){
                 case State.Solid:
                 {
@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
                 }
                 
             }
-
+            //// counter
             // afk
             curAfkCooldown -= Time.deltaTime;
             if( inputX != 0 || inputY != 0 ){
@@ -170,6 +170,33 @@ public class PlayerController : MonoBehaviour
                 _ani.SetTrigger("AFK");
                 curAfkCooldown = afkCooldown;
             }
+
+            // coyoteTime
+
+            switch(PlayerData.Pd.state){
+                case State.Solid:
+                    if(checkAttached()){
+                        curCoyoteTime = coyoteTime;
+                    }else{
+                        curCoyoteTime -= Time.deltaTime;
+                    }
+                    break;
+                case State.Gas:
+                    if(checkCeiling()){
+                        curCoyoteTime = coyoteTime;
+                    }else{
+                        curCoyoteTime -= Time.deltaTime;
+                    }
+                    break;
+            }
+
+            // jumpbuffer
+            if(Input.GetKeyDown(KeyCode.Space)){
+                curJumpBufferTime = jumpBufferTime;
+            }else{
+                curJumpBufferTime -= Time.deltaTime;
+            }
+
 
             // debug
             checkAttached();
@@ -190,6 +217,19 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    public State temperatureToState(float temp){
+        if(PlayerData.Pd.temperature <= solidToLiquid){
+            return State.Solid;
+        }
+        else if (PlayerData.Pd.temperature > solidToLiquid && PlayerData.Pd.temperature <= liquidToGas){
+            return State.Liquid;
+        }
+        else if (PlayerData.Pd.temperature > liquidToGas){
+            return State.Gas;
+        }
+        return State.Solid;
+    }
+
     void solidInit(){
         PlayerData.Pd.state = State.Solid;
         this.gameObject.layer = LayerMask.NameToLayer("PlayerS");
@@ -200,6 +240,9 @@ public class PlayerController : MonoBehaviour
         switch (previousState){
             case State.Liquid:
                 _ani.SetTrigger("LiquidToSolid");
+                break;
+            case State.Solid:
+                _ani.SetTrigger("StartScene");
                 break;
         }
         previousState = State.Solid;
@@ -231,6 +274,9 @@ public class PlayerController : MonoBehaviour
             case State.Gas:
                 _ani.SetTrigger("GasToLiquid");
                 break;
+            case State.Liquid:
+                _ani.SetTrigger("StartScene");
+                break;
         }
 
         
@@ -256,6 +302,9 @@ public class PlayerController : MonoBehaviour
         switch (previousState){
             case State.Liquid:
                 _ani.SetTrigger("LiquidToGas");
+                break;
+            case State.Gas:
+                _ani.SetTrigger("StartScene");
                 break;
 
         }
@@ -284,11 +333,16 @@ public class PlayerController : MonoBehaviour
         }
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Max(inputY, -maxFallVelocity));
-        if(checkAttached() && Input.GetKeyDown(KeyCode.Space)){
+        if(curCoyoteTime > 0f && curJumpBufferTime > 0f){
             _ani.SetBool("Grounded", isAttached);
             _ani.SetTrigger("Jump");
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
+            curJumpBufferTime = 0f;
+        }
+        if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y > 0f){
+            _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
+            curCoyoteTime = 0f;
         }
 
 
@@ -421,11 +475,17 @@ public class PlayerController : MonoBehaviour
         changeDirection();
         // set speed
         _rb.velocity = new Vector2(inputX * PlayerData.Pd.speed, Mathf.Min(_rb.velocity.y, maxFallVelocity));
-        if(checkCeiling() && Input.GetKeyDown(KeyCode.Space)){
+        if(curCoyoteTime > 0f && curJumpBufferTime > 0f){
             _ani.SetBool("Grounded", isCeiling);
             _ani.SetTrigger("Jump");
             _rb.velocity += new Vector2(0, -PlayerData.Pd.jumpForce);
+            curJumpBufferTime = 0f;
         }
+        if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y < 0f){
+            _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
+            curCoyoteTime = 0f;
+        }
+
         _ani.SetBool("Grounded", isCeiling);
     }
 
@@ -573,8 +633,22 @@ public class PlayerController : MonoBehaviour
         // after moving
         transform.rotation = Quaternion.identity;
         PlayerData.Pd.temperature = PlayerData.Pd.lastCheckedTemperature;
+        PlayerData.Pd.state = temperatureToState(PlayerData.Pd.temperature);
+        switch (PlayerData.Pd.state){
+            case State.Solid:
+                solidInit();
+                break;
+            case State.Liquid:
+                liquidInit();
+                break;
+            case State.Gas:
+                gasInit();
+                break;
+        }
         _ani.SetTrigger("StartScene");
         _sr.color = Color.white;
+        _col.enabled = true;
+        
 
         for (int i = 0; i < 3; i++)
         {
@@ -588,7 +662,6 @@ public class PlayerController : MonoBehaviour
         _rb.isKinematic = false;
         // enable
         _rb.velocity = Vector2.zero;
-        _col.enabled = true;
         if(PlayerData.Pd.state == State.Liquid) StartCoroutine(liquidDrop2());
     }
 
