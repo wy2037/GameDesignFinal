@@ -5,8 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class Switch : MonoBehaviour
 {
-    [SerializeField] private TemperatureZone temperatureZone;
-    [SerializeField] private GameObject windField;
+    [SerializeField] private TemperatureZone[] temperatureZones;
+    [SerializeField] private GameObject[] windFields;
     [SerializeField] float[] zoneTemperature;
     int zoneTempIdx = 0;
 
@@ -47,16 +47,19 @@ public class Switch : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other) {
         if(other.CompareTag("Player") && Input.GetKeyDown(KeyCode.F)){
-            if(temperatureZone != null){
-                zoneTempIdx = (++zoneTempIdx) % zoneTemperature.Length;
-                float resTemp = zoneTemperature[zoneTempIdx];
-                temperatureZone.zoneType = getResultState(resTemp, temperatureZone.zoneType);
-                temperatureZone.zoneTemperature = resTemp;
-                temperatureZone.initializeZone();
+            foreach (TemperatureZone temperatureZone in temperatureZones) {
+                if(temperatureZone != null){
+                    zoneTempIdx = (++zoneTempIdx) % zoneTemperature.Length;
+                    float resTemp = zoneTemperature[zoneTempIdx];
+                    temperatureZone.zoneType = getResultState(resTemp, temperatureZone.zoneType);
+                    temperatureZone.zoneTemperature = resTemp;
+                    temperatureZone.initializeZone();
+                }
             }
-
-            if(windField != null){
-                windField.SetActive(!windField.activeSelf);
+            foreach (GameObject windField in windFields) {
+                if(windField != null){
+                    windField.SetActive(!windField.activeSelf);
+                }
             }
         }
     }
