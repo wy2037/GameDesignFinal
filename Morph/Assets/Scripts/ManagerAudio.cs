@@ -15,6 +15,7 @@ public class ManagerAudio : MonoBehaviour
             if (_instance == null)
             {
                 _instance = FindObjectOfType<ManagerAudio>();
+                DontDestroyOnLoad(_instance.gameObject);
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject();

@@ -14,6 +14,8 @@ public class ManagerScene : MonoBehaviour
             if (_instance == null)
             {
                 _instance = FindObjectOfType<ManagerScene>();
+                DontDestroyOnLoad(_instance.gameObject);
+
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject();
@@ -60,6 +62,10 @@ public class ManagerScene : MonoBehaviour
             //SceneManager.LoadScene("HomePage");
             //ManagerScene.Instance.GoToScene("HomePage");
             ManagerScene.Instance.GoToScene("VeryFirstPage");
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            ManagerScene.Instance.GoToScene("Level 2");
         }
     }
 }
