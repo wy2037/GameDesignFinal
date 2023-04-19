@@ -64,6 +64,7 @@
 //        textMeshPro = textObject.AddComponent<TextMeshProUGUI>();
 //        textMeshPro.text = "teseteseteseteseteseteset";
 //        print(textMeshPro.text);
+//        textMeshPro.font = 
 //        //textMeshPro.text = str;
 //        textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 0f);
 
@@ -124,16 +125,19 @@ using UnityEngine;
 
 public class ManagerText : MonoBehaviour
 {
+
     [SerializeField] private TextMeshProUGUI textMeshPro;
 
-    [SerializeField] private float typingSpeed = 0.1f;
+    [SerializeField] private float typingInterval = 0.2f;
 
     [SerializeField] private float delay = 3f;
+
+    [SerializeField] private float fadeDuration = 1.0f;
     private string textToType;
 
     private Coroutine typingCoroutine;
 
-    public void StartTyping(string text,int position)
+    public void StartTyping(string text, int position)
     {
         if (typingCoroutine != null)
         {
@@ -186,10 +190,10 @@ public class ManagerText : MonoBehaviour
         for (int i = 0; i < textToType.Length; i++)
         {
             textMeshPro.text += textToType[i];
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSeconds(typingInterval);
         }
         //yield return new WaitForSeconds(delay);
-
+        yield return new WaitForSeconds(delay);
         //textMeshPro.text = "";
 
 
@@ -198,13 +202,13 @@ public class ManagerText : MonoBehaviour
 
         // 显示文本
         textMeshPro.alpha = 1f;
-        float duration = 3.0f;
+        //float fadeDuration = 1.5f;
         // 等待指定的时间
         float elapsedTime = 0f;
-        while (elapsedTime < duration)
+        while (elapsedTime < fadeDuration)
         {
             // 计算当前的 alpha 值
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
 
             // 更新文本的 alpha 值
             textMeshPro.alpha = alpha;
@@ -224,7 +228,7 @@ public class ManagerText : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            StartTyping("Hello, world!",1);
+            StartTyping("Hello, world!", 1);
         }
 
     }

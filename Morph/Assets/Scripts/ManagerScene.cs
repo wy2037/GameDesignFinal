@@ -6,19 +6,19 @@ using System.IO;
 
 public class ManagerScene : MonoBehaviour
 {
-    private static SingletonExample _instance;
-    public static SingletonExample Instance
+    private static ManagerScene _instance;
+    public static ManagerScene Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<SingletonExample>();
+                _instance = FindObjectOfType<ManagerScene>();
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject();
-                    _instance = singletonObject.AddComponent<SingletonExample>();
-                    singletonObject.name = typeof(SingletonExample).ToString() + " (Singleton)";
+                    _instance = singletonObject.AddComponent<ManagerScene>();
+                    singletonObject.name = typeof(ManagerScene).ToString() + " (Singleton)";
                     DontDestroyOnLoad(singletonObject);
                 }
             }
@@ -51,7 +51,15 @@ public class ManagerScene : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))//Enter Homepage
         {
             //SceneManager.LoadScene("HomePage");
-            ManagerScene.Instance.GoToScene("HomePage");
+            //ManagerScene.Instance.GoToScene("HomePage");
+            ManagerScene.Instance.GoToScene("Level 0");
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))//Enter Homepage
+        {
+            //SceneManager.LoadScene("HomePage");
+            //ManagerScene.Instance.GoToScene("HomePage");
+            ManagerScene.Instance.GoToScene("VeryFirstPage");
         }
     }
 }
