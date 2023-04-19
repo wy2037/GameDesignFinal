@@ -11,6 +11,8 @@ public class Switch : MonoBehaviour
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private bool state;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private LayerMask playerLayer;
+    private bool playerNearby;
 
     int zoneTempIdx = 0;
 
@@ -31,6 +33,24 @@ public class Switch : MonoBehaviour
             sprite.color = Color.red;
             lineRenderer.startColor = Color.red;
             lineRenderer.endColor = Color.red;
+        }
+        playerNearby = Physics2D.OverlapBox(transform.position, new Vector2(2, 2), 0, playerLayer);
+        if (playerNearby && Input.GetKeyDown(KeyCode.F)) {
+            state = !state;
+            foreach (TemperatureZone temperatureZone in temperatureZones) {
+                if(temperatureZone != null){
+                    zoneTempIdx = (++zoneTempIdx) % zoneTemperature.Length;
+                    float resTemp = zoneTemperature[zoneTempIdx];
+                    temperatureZone.zoneType = getResultState(resTemp, temperatureZone.zoneType);
+                    temperatureZone.zoneTemperature = resTemp;
+                    temperatureZone.initializeZone();
+                }
+            }
+            foreach (GameObject windField in windFields) {
+                if(windField != null){
+                    windField.SetActive(!windField.activeSelf);
+                }
+            }
         }
     }
 
@@ -56,7 +76,7 @@ public class Switch : MonoBehaviour
     //     }
     // }
 
-
+/*
     private void OnTriggerStay2D(Collider2D other) {
         if(other.CompareTag("Player") && Input.GetKeyDown(KeyCode.F)){
             state = !state;
@@ -76,8 +96,7 @@ public class Switch : MonoBehaviour
             }
         }
     }
-
-
+*/
 
     ZoneType getResultState(float temp, ZoneType state){
         ZoneType res = ZoneType.HeaterMid;
