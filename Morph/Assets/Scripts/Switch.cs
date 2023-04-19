@@ -5,9 +5,13 @@ using UnityEngine.Tilemaps;
 
 public class Switch : MonoBehaviour
 {
-    [SerializeField] private TemperatureZone temperatureZone;
-    [SerializeField] private GameObject windField;
+    [SerializeField] private TemperatureZone[] temperatureZones;
+    [SerializeField] private GameObject[] windFields;
     [SerializeField] float[] zoneTemperature;
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private bool state;
+    [SerializeField] private SpriteRenderer sprite;
+
     int zoneTempIdx = 0;
 
     // Start is called before the first frame update
@@ -19,7 +23,15 @@ public class Switch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (state == true) {
+            sprite.color = Color.green;
+            lineRenderer.startColor = Color.green;
+            lineRenderer.endColor = Color.green;
+        } else {
+            sprite.color = Color.red;
+            lineRenderer.startColor = Color.red;
+            lineRenderer.endColor = Color.red;
+        }
     }
 
     // private void OnTriggerEnter2D(Collider2D collision) {
@@ -47,16 +59,20 @@ public class Switch : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other) {
         if(other.CompareTag("Player") && Input.GetKeyDown(KeyCode.F)){
-            if(temperatureZone != null){
-                zoneTempIdx = (++zoneTempIdx) % zoneTemperature.Length;
-                float resTemp = zoneTemperature[zoneTempIdx];
-                temperatureZone.zoneType = getResultState(resTemp, temperatureZone.zoneType);
-                temperatureZone.zoneTemperature = resTemp;
-                temperatureZone.initializeZone();
+            state = !state;
+            foreach (TemperatureZone temperatureZone in temperatureZones) {
+                if(temperatureZone != null){
+                    zoneTempIdx = (++zoneTempIdx) % zoneTemperature.Length;
+                    float resTemp = zoneTemperature[zoneTempIdx];
+                    temperatureZone.zoneType = getResultState(resTemp, temperatureZone.zoneType);
+                    temperatureZone.zoneTemperature = resTemp;
+                    temperatureZone.initializeZone();
+                }
             }
-
-            if(windField != null){
-                windField.SetActive(!windField.activeSelf);
+            foreach (GameObject windField in windFields) {
+                if(windField != null){
+                    windField.SetActive(!windField.activeSelf);
+                }
             }
         }
     }
