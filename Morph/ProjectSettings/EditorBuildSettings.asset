@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SwitchTest.unity
     guid: b15add0ed4617a74fbc5236436a878b9
+  - enabled: 1
+    path: Assets/Scenes/VeryFirstPage.unity
+    guid: a18f6bf4966d74d2e834cf48e3c46d6f
   m_configObjects: {}
