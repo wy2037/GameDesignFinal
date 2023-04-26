@@ -54,7 +54,7 @@ public class LevelEntry : MonoBehaviour
         _player.GetComponent<PlayerController>().enabled = false;
         _player.GetComponent<Rigidbody2D>().isKinematic = true;
         PlayerData.Pd.lastCheckedPosition = transform.position;
-        PlayerData.Pd.lastCheckedTemperature = PlayerData.Pd.levelRoomTemperatures[SceneManager.GetActiveScene().buildIndex];
+        PlayerData.Pd.lastCheckedTemperature = PlayerData.Pd.levelRoomTemperatures[SceneManager.GetActiveScene().buildIndex - PlayerData.Pd.firstLevelIndex];
         _player.transform
         .DOMove(
             transform.position,

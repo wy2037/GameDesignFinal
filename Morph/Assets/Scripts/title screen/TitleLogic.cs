@@ -17,7 +17,9 @@ public class TitleLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            SceneManager.LoadScene("World Map");
+
+            Debug.Log($"{SceneManager.GetActiveScene().buildIndex}");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 }

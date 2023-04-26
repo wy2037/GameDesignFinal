@@ -9450,7 +9450,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835143422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.238917, y: -1.4287976, z: -10}
+  m_LocalPosition: {x: -6.435371, y: -1.4287974, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -66797,6 +66797,7 @@ MonoBehaviour:
   gravityScale: 1.2
   lastCheckedPosition: {x: 0, y: 0, z: 0}
   lastCheckedTemperature: 0
+  firstLevelIndex: 2
   levelRoomTemperatures:
   - -50
   - -50
