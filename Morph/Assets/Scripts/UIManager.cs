@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
     public static UIManager Instance { get{ return _instance; }}
+    private Canvas canvas;
     [SerializeField] private TextMeshProUGUI tempText;
     [SerializeField] private Transform solidTutorial;
     [SerializeField] private Transform liquidTutorial;
@@ -32,6 +35,10 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        ResetVariables(SceneManager.GetActiveScene().buildIndex);
+
+        canvas = GetComponent<Canvas>();
         //tempText = getComponent<TextMeshProUGUI>();
         tempText.text = temperature.ToString() + "°C";
     }
@@ -43,6 +50,19 @@ public class UIManager : MonoBehaviour
 
     }
 
+
+    private void ResetVariables(int levelIndex)
+    {
+        if (FindObjectOfType<EventSystem>() == null)
+        {
+            var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+        }
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Check if the loaded scene is the one you want to reset the variables for
+        ResetVariables(scene.buildIndex);
+    }
     public void activateUI(int n){
         switch (n){
             case 0:
