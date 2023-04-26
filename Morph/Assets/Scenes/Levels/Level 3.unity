@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 47386098}
   - component: {fileID: 47386099}
   - component: {fileID: 47386100}
+  - component: {fileID: 47386101}
   m_Layer: 11
   m_Name: airVent
   m_TagString: Untagged
@@ -370,7 +371,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 891449875}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &47386095
 TilemapRenderer:
@@ -8284,6 +8285,20 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
+--- !u!114 &47386101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 47386093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 0
+  stateType: 0
 --- !u!1 &112782658
 GameObject:
   m_ObjectHideFlags: 0
@@ -8890,6 +8905,7 @@ GameObject:
   - component: {fileID: 270588027}
   - component: {fileID: 270588029}
   - component: {fileID: 270588030}
+  - component: {fileID: 270588031}
   m_Layer: 10
   m_Name: spike
   m_TagString: Untagged
@@ -13294,6 +13310,20 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
+--- !u!114 &270588031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270588023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 0
+  stateType: 0
 --- !u!1 &292878118
 GameObject:
   m_ObjectHideFlags: 0
@@ -19917,7 +19947,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835143422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.78954, y: 7.0358224, z: -10}
+  m_LocalPosition: {x: 25.703083, y: 7.037225, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20202,9 +20232,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 270588024}
+  - {fileID: 47386094}
   - {fileID: 1501703922}
   - {fileID: 1779025529}
-  - {fileID: 47386094}
   - {fileID: 946969112}
   - {fileID: 1066652865}
   - {fileID: 316970725}
@@ -116207,7 +116237,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 891449875}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!19719996 &1501703923
 TilemapCollider2D:
@@ -117111,6 +117141,7 @@ MonoBehaviour:
   gravityScale: 1.2
   lastCheckedPosition: {x: 0, y: 0, z: 0}
   lastCheckedTemperature: 0
+  firstLevelIndex: 0
   levelRoomTemperatures:
   - -66
   - -50
@@ -117714,7 +117745,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 891449875}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &1779025530
 TilemapRenderer:
