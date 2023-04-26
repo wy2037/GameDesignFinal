@@ -69,7 +69,12 @@ public class GameFeelManager : MonoBehaviour
         volume.profile.TryGet<LensDistortion>(out lensDistortion);
         volume.profile.TryGet<ChromaticAberration>(out chromaticAberration);
         // camera
-        virtualCamera = GameObject.FindGameObjectWithTag("VirtualCamera").GetComponent<CinemachineVirtualCamera>();
+        try{
+            virtualCamera = GameObject.FindGameObjectWithTag("VirtualCamera").GetComponent<CinemachineVirtualCamera>();
+        }
+        catch{
+            
+        }
         noise = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
