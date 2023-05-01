@@ -12,6 +12,8 @@ public class Switch : MonoBehaviour
     [SerializeField] private bool state;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private AudioSource source;
+    [SerializeField] private AudioClip clip;
     private bool playerNearby;
 
     int zoneTempIdx = 0;
@@ -26,17 +28,18 @@ public class Switch : MonoBehaviour
     void Update()
     {
         if (state == true) {
-            sprite.color = Color.green;
+            //sprite.color = Color.green;
             lineRenderer.startColor = Color.green;
             lineRenderer.endColor = Color.green;
         } else {
-            sprite.color = Color.red;
+            //sprite.color = Color.red;
             lineRenderer.startColor = Color.red;
             lineRenderer.endColor = Color.red;
         }
         playerNearby = Physics2D.OverlapBox(transform.position, new Vector2(2, 2), 0, playerLayer);
         if (playerNearby && Input.GetKeyDown(KeyCode.F)) {
             state = !state;
+            source.PlayOneShot(clip);
             foreach (TemperatureZone temperatureZone in temperatureZones) {
                 if(temperatureZone != null){
                     zoneTempIdx = (++zoneTempIdx) % zoneTemperature.Length;
