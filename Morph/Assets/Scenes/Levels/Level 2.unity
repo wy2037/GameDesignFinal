@@ -85281,7 +85281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82bc2293ef535394d942a9ec5afa8464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialID: 0
+  tutorialID: 3
 --- !u!61 &1077149121
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -86850,7 +86850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82bc2293ef535394d942a9ec5afa8464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialID: 0
+  tutorialID: 2
 --- !u!61 &1402077587
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -88154,6 +88154,7 @@ MonoBehaviour:
   gravityScale: 1.2
   lastCheckedPosition: {x: 0, y: 0, z: 0}
   lastCheckedTemperature: 0
+  firstLevelIndex: 0
   levelRoomTemperatures:
   - -50
   - -50

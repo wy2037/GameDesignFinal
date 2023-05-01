@@ -8298,7 +8298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectType: 0
-  stateType: 0
+  stateType: 2
 --- !u!1 &112782658
 GameObject:
   m_ObjectHideFlags: 0
