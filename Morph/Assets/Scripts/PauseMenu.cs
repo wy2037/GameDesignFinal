@@ -51,8 +51,57 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("Tutorial");
     }
 
-    public void RestartButton(){
-        //SceneManager.LoadScene("CharlesTest");
+    // public void RestartButton(){
+    //     //SceneManager.LoadScene("CharlesTest");
+    //     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    // }
+
+    // function to restart level
+    public void RestartLevel(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        PauseMenuCanvas.SetActive(false);
+        Paused = false;
+        Time.timeScale = 1f;
     }
+
+
+    // function to load level based on index
+    public void LoadLevel(int levelIndex){
+        SceneManager.LoadScene(levelIndex);
+        PauseMenuCanvas.SetActive(false);
+        Paused = false;
+        Time.timeScale = 1f;
+    }
+    // public void Level1Button(){
+    //     SceneManager.LoadScene(2);
+    //     PauseMenuCanvas.SetActive(false);
+    //     Paused = false;
+    //     Time.timeScale = 1f;
+    // }
+    // public void Level2Button(){
+    //     SceneManager.LoadScene(3);
+    //     PauseMenuCanvas.SetActive(false);
+    //     Paused = false;
+    //     Time.timeScale = 1f;
+    // }
+    // public void Level3Button(){
+    //     SceneManager.LoadScene(4);
+    //     PauseMenuCanvas.SetActive(false);
+    //     Time.timeScale = 1f;
+    // }
+    // public void Level4Button(){
+    //     SceneManager.LoadScene(5);
+    //     PauseMenuCanvas.SetActive(false);
+    //     Time.timeScale = 1f;
+    // }
+    // public void Level5Button(){
+    //     SceneManager.LoadScene(6);
+    //     PauseMenuCanvas.SetActive(false);
+    //     Time.timeScale = 1f;
+    // }
+    // public void Level6Button(){
+    //     SceneManager.LoadScene(7);
+    //     PauseMenuCanvas.SetActive(false);
+    //     Time.timeScale = 1f;
+    // }
 }

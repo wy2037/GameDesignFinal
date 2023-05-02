@@ -62,6 +62,9 @@ public class GameFeelManager : MonoBehaviour
 
     private void ResetVariables(int levelIndex)
     {
+        // killing all tweens
+        DOTween.KillAll();
+        
         // post processing
         //volume = GameObject.FindGameObjectWithTag("PostProcessingVolume").GetComponent<Volume>();
         volume = transform.GetComponent<Volume>();
