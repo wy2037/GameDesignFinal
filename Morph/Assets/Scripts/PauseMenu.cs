@@ -44,11 +44,25 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("Sample");
     }
 
-    public void SandboxButton(){
-        SceneManager.LoadScene("CharlesTest");
+    public void Level1Button(){
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(2);
     }
-    public void TutorialButton(){
-        SceneManager.LoadScene("Tutorial");
+    public void Level2Button(){
+        SceneManager.LoadScene(3);
+        Time.timeScale = 1f;
+    }
+    public void Level3Button(){
+        SceneManager.LoadScene(4);
+    }
+    public void Level4Button(){
+        SceneManager.LoadScene(5);
+    }
+    public void Level5Button(){
+        SceneManager.LoadScene(6);
+    }
+    public void Level6Button(){
+        SceneManager.LoadScene(7);
     }
 
     public void RestartButton(){
