@@ -18,6 +18,7 @@ public class TemperatureZone : MonoBehaviour
     [SerializeField] private float multiplier;
     [SerializeField] public ZoneType zoneType;
     [SerializeField] float maxCooldown, cooldown = 0;
+    [SerializeField] private bool isNormal = true;
     private Tilemap _tilemap;
 
     public Color heaterMidColor;
@@ -83,10 +84,12 @@ public class TemperatureZone : MonoBehaviour
             if (zoneType == ZoneType.HeaterMid || zoneType == ZoneType.HeaterHigh) {
                 accelerate();
                 GameFeelManager.Pm.heatUpEnter();
+                isNormal = false;
             }
             if (zoneType == ZoneType.CoolerMid || zoneType == ZoneType.CoolerLow) {
                 accelerate();
                 GameFeelManager.Pm.coolDownEnter();
+                isNormal = false;
             }
         }
     }
@@ -105,6 +108,12 @@ public class TemperatureZone : MonoBehaviour
             else if (zoneType == ZoneType.CoolerLow && PlayerData.Pd.temperature > zoneTemperature) {
                 PlayerData.Pd.temperature -= (1.5f * multiplier);
             }
+            else{
+                if(!isNormal){
+                    GameFeelManager.Pm.normalEnter();
+                    isNormal = true;
+                }
+            }
             cooldown = maxCooldown;
         }
     }
@@ -112,6 +121,7 @@ public class TemperatureZone : MonoBehaviour
     void OnTriggerExit2D(Collider2D other) {
         if (other.tag == "Player") {
             GameFeelManager.Pm.normalEnter();
+            isNormal = true;
             try{
                 RoomTemperature.Rt.inZone = false;
             }
