@@ -251,6 +251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 310586918}
   - component: {fileID: 310586917}
+  - component: {fileID: 310586919}
   m_Layer: 0
   m_Name: logo
   m_TagString: Untagged
@@ -325,6 +326,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &310586919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310586916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 482b999e0cdee4faca2f9cd8c6888028, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myselfObj: {fileID: 310586916}
+  startTime: 0.1
+  stayTime: 2
 --- !u!1 &348407701
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,7 +398,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -10
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -419,6 +435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1640893131}
   - component: {fileID: 1640893130}
+  - component: {fileID: 1640893132}
   m_Layer: 0
   m_Name: Morph Studio
   m_TagString: Untagged
@@ -493,6 +510,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1640893132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640893129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 482b999e0cdee4faca2f9cd8c6888028, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myselfObj: {fileID: 1640893129}
+  startTime: 0.1
+  stayTime: 2
 --- !u!1 &2073901659
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,7 +542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2073901660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,8 +555,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 482b999e0cdee4faca2f9cd8c6888028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 0}
   myselfObj: {fileID: 2073901659}
+  startTime: 0.1
+  stayTime: 2
 --- !u!212 &2073901661
 SpriteRenderer:
   m_ObjectHideFlags: 0
