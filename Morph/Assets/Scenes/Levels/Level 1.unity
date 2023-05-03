@@ -62451,7 +62451,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.99215686, b: 0.9411765, a: 1}
   m_Origin: {x: -24, y: -24, z: 0}
   m_Size: {x: 84, y: 36, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -68794,7 +68794,9 @@ MonoBehaviour:
   - -50
   - -50
   - -50
+  - -50
   levelPlayerTemperatures:
+  - -50
   - -50
   - -50
   - -50

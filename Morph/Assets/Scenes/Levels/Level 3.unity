@@ -19867,7 +19867,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835143422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.793129, y: 7.0358152, z: -10}
+  m_LocalPosition: {x: 26.78946, y: 7.0358224, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44482,6 +44482,7 @@ MonoBehaviour:
   zoneType: 0
   maxCooldown: 0.01
   cooldown: 0
+  isNormal: 1
   heaterMidColor: {r: 1, g: 0.49185848, b: 0, a: 1}
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
@@ -44783,6 +44784,7 @@ MonoBehaviour:
   zoneType: 1
   maxCooldown: 0.01
   cooldown: 0
+  isNormal: 1
   heaterMidColor: {r: 1, g: 0.49185848, b: 0, a: 1}
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
@@ -110433,7 +110435,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.99215686, b: 0.9411765, a: 1}
   m_Origin: {x: -29, y: -40, z: 0}
   m_Size: {x: 99, y: 64, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -116369,6 +116371,7 @@ MonoBehaviour:
   zoneType: 2
   maxCooldown: 0.01
   cooldown: 0
+  isNormal: 1
   heaterMidColor: {r: 1, g: 0.49185848, b: 0, a: 1}
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
@@ -123701,6 +123704,7 @@ MonoBehaviour:
   zoneType: 3
   maxCooldown: 0.01
   cooldown: 0
+  isNormal: 1
   heaterMidColor: {r: 1, g: 0.49185848, b: 0, a: 1}
   heaterHighColor: {r: 0.8784314, g: 0.23147008, b: 0.05490196, a: 1}
   coolerMidColor: {r: 0, g: 0.713284, b: 1, a: 1}
