@@ -88036,6 +88036,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 0
   stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1596698619
 GameObject:
   m_ObjectHideFlags: 0
@@ -89123,6 +89124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 0
   stateType: 2
+  alphaValue: 0
 --- !u!1 &1915512124
 GameObject:
   m_ObjectHideFlags: 0
@@ -89330,7 +89332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915512124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.8138237, y: -1.0718765, z: -10}
+  m_LocalPosition: {x: -2.7274694, y: -1.0768838, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

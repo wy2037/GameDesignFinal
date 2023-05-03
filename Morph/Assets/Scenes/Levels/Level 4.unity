@@ -10568,6 +10568,7 @@ GameObject:
   - component: {fileID: 425026518}
   - component: {fileID: 425026517}
   - component: {fileID: 425026516}
+  - component: {fileID: 425026519}
   m_Layer: 0
   m_Name: fan 2
   m_TagString: Untagged
@@ -10771,6 +10772,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &425026519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425026514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &467654510
 GameObject:
   m_ObjectHideFlags: 0
@@ -101045,6 +101061,7 @@ GameObject:
   - component: {fileID: 935424162}
   - component: {fileID: 935424161}
   - component: {fileID: 935424160}
+  - component: {fileID: 935424163}
   m_Layer: 0
   m_Name: fan 9
   m_TagString: Untagged
@@ -101248,6 +101265,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &935424163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935424158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &941930091
 GameObject:
   m_ObjectHideFlags: 0
@@ -112107,6 +112139,7 @@ GameObject:
   - component: {fileID: 1107716929}
   - component: {fileID: 1107716928}
   - component: {fileID: 1107716927}
+  - component: {fileID: 1107716930}
   m_Layer: 0
   m_Name: fan 8
   m_TagString: Untagged
@@ -112310,6 +112343,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1107716930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1107716925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1118792710
 GameObject:
   m_ObjectHideFlags: 0
@@ -118942,6 +118990,7 @@ GameObject:
   - component: {fileID: 1333758654}
   - component: {fileID: 1333758653}
   - component: {fileID: 1333758652}
+  - component: {fileID: 1333758655}
   m_Layer: 0
   m_Name: fan 6
   m_TagString: Untagged
@@ -119145,6 +119194,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1333758655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333758650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1354952802
 GameObject:
   m_ObjectHideFlags: 0
@@ -119864,6 +119928,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 0
   stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1548951729
 GameObject:
   m_ObjectHideFlags: 0
@@ -119876,6 +119941,7 @@ GameObject:
   - component: {fileID: 1548951733}
   - component: {fileID: 1548951732}
   - component: {fileID: 1548951731}
+  - component: {fileID: 1548951734}
   m_Layer: 0
   m_Name: fan 3
   m_TagString: Untagged
@@ -120079,6 +120145,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1548951734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548951729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1577649313
 GameObject:
   m_ObjectHideFlags: 0
@@ -120091,6 +120172,7 @@ GameObject:
   - component: {fileID: 1577649317}
   - component: {fileID: 1577649316}
   - component: {fileID: 1577649315}
+  - component: {fileID: 1577649318}
   m_Layer: 0
   m_Name: fan 7
   m_TagString: Untagged
@@ -120294,6 +120376,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1577649318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577649313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1592264573
 GameObject:
   m_ObjectHideFlags: 0
@@ -125358,6 +125455,7 @@ GameObject:
   - component: {fileID: 1706145806}
   - component: {fileID: 1706145805}
   - component: {fileID: 1706145804}
+  - component: {fileID: 1706145807}
   m_Layer: 0
   m_Name: fan 5
   m_TagString: Untagged
@@ -125561,6 +125659,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1706145807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706145802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1709290662
 GameObject:
   m_ObjectHideFlags: 0
@@ -125708,7 +125821,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1730916419}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: -5, z: 0}
+  m_LocalPosition: {x: 50, y: -6, z: 0}
   m_LocalScale: {x: 200, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -125778,6 +125891,7 @@ GameObject:
   - component: {fileID: 1782705510}
   - component: {fileID: 1782705509}
   - component: {fileID: 1782705508}
+  - component: {fileID: 1782705511}
   m_Layer: 0
   m_Name: fan 4
   m_TagString: Untagged
@@ -125981,6 +126095,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1782705511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782705506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1803268235
 GameObject:
   m_ObjectHideFlags: 0
@@ -125993,6 +126122,7 @@ GameObject:
   - component: {fileID: 1803268239}
   - component: {fileID: 1803268238}
   - component: {fileID: 1803268237}
+  - component: {fileID: 1803268240}
   m_Layer: 0
   m_Name: fan 10
   m_TagString: Untagged
@@ -126196,6 +126326,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1803268240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803268235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &1824989126
 GameObject:
   m_ObjectHideFlags: 0
@@ -131688,6 +131833,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 0
   stateType: 2
+  alphaValue: 0.25
 --- !u!1 &1915512124
 GameObject:
   m_ObjectHideFlags: 0
@@ -131895,7 +132041,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915512124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.3551197, y: -1.0735343, z: -10}
+  m_LocalPosition: {x: -3.2687569, y: -1.0775673, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -132505,6 +132651,7 @@ GameObject:
   - component: {fileID: 2121153635}
   - component: {fileID: 2121153634}
   - component: {fileID: 2121153633}
+  - component: {fileID: 2121153636}
   m_Layer: 0
   m_Name: fan 1
   m_TagString: Untagged
@@ -132708,6 +132855,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &2121153636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121153631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3cdb59f67d349f6857d76a1859a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 1
+  stateType: 0
+  alphaValue: 0.25
 --- !u!1 &2122442057
 GameObject:
   m_ObjectHideFlags: 0
