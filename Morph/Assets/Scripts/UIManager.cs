@@ -50,6 +50,12 @@ public class UIManager : MonoBehaviour
 
     }
 
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.F)){
+            scaleDownActive();
+        }
+    }
+
 
     private void ResetVariables(int levelIndex)
     {
@@ -104,5 +110,24 @@ public class UIManager : MonoBehaviour
         .OnComplete(()=>{
             obj.gameObject.SetActive(false);
         });
+    }
+
+    // scale down any tutorial that is currently active
+    public void scaleDownActive(){
+        if (solidTutorial.gameObject.activeSelf){
+            scalePageDown(solidTutorial);
+        }
+        if (liquidTutorial.gameObject.activeSelf){
+            scalePageDown(liquidTutorial);
+        }
+        if (obstacleTutorial.gameObject.activeSelf){
+            scalePageDown(obstacleTutorial);
+        }
+        if (gasTutorial.gameObject.activeSelf){
+            scalePageDown(gasTutorial);
+        }
+        if (interactionTutorial.gameObject.activeSelf){
+            scalePageDown(interactionTutorial);
+        }
     }
 }
