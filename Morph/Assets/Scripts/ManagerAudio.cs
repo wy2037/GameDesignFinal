@@ -274,14 +274,16 @@ public class ManagerAudio : MonoBehaviour
 
                 int musicChoice = ((prevSceneIndex-2) % 5) + 1;//是因为目前只有5个loopBGM可切换。//注意序号应该从1开始因而+1//6个leve的序号为2-7，所以先要-2
                                                            //int musicStatus = 1;//1,2,3 for gas, solid and liquid;
-                print(musicChoice);
+                print("music choice" +musicChoice);
                 string pathA = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S1";
                 string pathB = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S2";
                 string pathC = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S3";
                 trackA = Resources.Load<AudioClip>(pathA);
                 trackB = Resources.Load<AudioClip>(pathB);
                 trackC = Resources.Load<AudioClip>(pathC);
-
+                ManagerAudio.Instance.PlayA(trackA);
+                ManagerAudio.Instance.PlayB(trackB);
+                ManagerAudio.Instance.PlayC(trackC);
 
             }
             //轨道中
@@ -293,27 +295,27 @@ public class ManagerAudio : MonoBehaviour
             //int musicStatus = playerdata.pd.state;
 
 
-            
-            int activeState = 1;
-            //int activeState = -2;
-            //if (PlayerData.Pd.state == State.Gas)
-            //{
-            //    //print("1111");
-            //    activeState = 1;
 
-            //}
-            //else if (PlayerData.Pd.state == State.Solid)
-            //{
-            //    activeState = 2;
+            //int activeState = 1;
+            int activeState = -2;
+            if (PlayerData.Pd.state == State.Gas)
+            {
+                //print("1111");
+                activeState = 1;
 
-            //    //print("2222");
-            //}
-            //else
-            //{
-            //    activeState = 3;
+            }
+            else if (PlayerData.Pd.state == State.Solid)
+            {
+                activeState = 2;
 
-            //    //print("3333");
-            //}
+                //print("2222");
+            }
+            else
+            {
+                activeState = 3;
+
+                //print("3333");
+            }
 
 
 
