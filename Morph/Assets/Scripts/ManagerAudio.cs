@@ -221,6 +221,7 @@ public class ManagerAudio : MonoBehaviour
 
 
         //audioSourceTheme.volume = 150;
+        //audioSourceThemeV.volume= 150;
         //audioSourceA.volume = 150;
         //audioSourceB.volume = 150;
         //audioSourceC.volume = 150;
