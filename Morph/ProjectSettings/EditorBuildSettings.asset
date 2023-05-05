@@ -35,4 +35,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Basic Screens/World Map.unity
     guid: 45e90a9dc8b754586aab35333b3e4bc3
+  - enabled: 1
+    path: Assets/Scenes/Basic Screens/Tutorial Screen.unity
+    guid: 4064e7362b4de4130a0c0ed0ec25593b
+  - enabled: 1
+    path: Assets/Scenes/Basic Screens/Cast Screen Recovery.unity
+    guid: 05a146b10d0844c1f935e38e92adf28d
   m_configObjects: {}

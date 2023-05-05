@@ -29,18 +29,27 @@ public class ManagerAudio : MonoBehaviour
     }
 
 
+    public AudioSource audioSourceTheme;
+    public AudioSource audioSourceThemeV;
+
     public AudioSource audioSourceA;
     public AudioSource audioSourceB;
     public AudioSource audioSourceC;
     public AudioSource audioSourceSFX;
 
 
+    public AudioClip trackTheme;
+    public AudioClip trackThemeV;
     public AudioClip trackA;
     public AudioClip trackB;
     public AudioClip trackC;
-    public AudioClip trackSFX1;//SFX start
-    public AudioClip trackSFX2;//SFX end
-    public AudioClip trackSFX3;//SFX clearance
+    public AudioClip trackSFX1;//SFX death - fail
+    public AudioClip trackSFX2;//SFX end - pass level
+    public AudioClip trackSFX3;//SFX clearall - pass all levels
+    public AudioClip trackSFX4;//SFX jump
+    public AudioClip trackSFX5;//SFX change to solid
+    public AudioClip trackSFX6;//SFX change to liquid
+    public AudioClip trackSFX7;//SFX change to gas
 
     //REMEMBER TO ASSIGN
     public AudioClip test1;
@@ -48,6 +57,22 @@ public class ManagerAudio : MonoBehaviour
     public AudioClip test3;
     public AudioClip test4;
 
+    public void PlayTheme()
+    {
+
+        audioSourceTheme.clip = trackTheme;
+        audioSourceTheme.loop = true;
+        audioSourceTheme.Play();
+        print("play now");
+    }
+
+    public void PlayThemeV()
+    {
+        audioSourceThemeV.clip = trackThemeV;
+        audioSourceThemeV.loop = true;
+        audioSourceThemeV.pitch = 0.82f;
+        audioSourceThemeV.Play();
+    }
     public void PlayA(AudioClip music)
     {
         audioSourceA.clip = music;
@@ -75,18 +100,42 @@ public class ManagerAudio : MonoBehaviour
 
         switch (str)
         {
-            case "start":
+            case "death":
                 audioSourceSFX.clip = trackSFX1;
                 audioSourceSFX.loop = false;
                 audioSourceSFX.Play();
                 break;
             case "end":
+                ManagerAudio.Instance.Stop();
                 audioSourceSFX.clip = trackSFX2;
                 audioSourceSFX.loop = false;
                 audioSourceSFX.Play();
+                
                 break;
-            case "clear":
+            case "clearall":
+                ManagerAudio.Instance.Stop();
+
                 audioSourceSFX.clip = trackSFX3;
+                audioSourceSFX.loop = false;
+                audioSourceSFX.Play();
+                break;
+            case "jump":
+                audioSourceSFX.clip = trackSFX4;
+                audioSourceSFX.loop = false;
+                audioSourceSFX.Play();
+                break;
+            case "solid":
+                audioSourceSFX.clip = trackSFX5;
+                audioSourceSFX.loop = false;
+                audioSourceSFX.Play();
+                break;
+            case "liquid":
+                audioSourceSFX.clip = trackSFX6;
+                audioSourceSFX.loop = false;
+                audioSourceSFX.Play();
+                break;
+            case "gas":
+                audioSourceSFX.clip = trackSFX7;
                 audioSourceSFX.loop = false;
                 audioSourceSFX.Play();
                 break;
@@ -103,6 +152,8 @@ public class ManagerAudio : MonoBehaviour
 
     public void Stop()
     {
+        audioSourceTheme.Stop();
+        audioSourceThemeV.Stop();
         audioSourceA.Stop();
         audioSourceB.Stop();
         audioSourceC.Stop();
@@ -111,6 +162,7 @@ public class ManagerAudio : MonoBehaviour
 
     public void Pause()
     {
+        audioSourceTheme.Pause();
         audioSourceA.Pause();
         audioSourceB.Pause();
         audioSourceC.Pause();
@@ -119,12 +171,19 @@ public class ManagerAudio : MonoBehaviour
 
     public void Volume0()
     {
+        audioSourceTheme.volume = 0;
         audioSourceA.volume = 0;
         audioSourceB.volume = 0;
         audioSourceC.volume = 0;
     }
 
     //Unity里提过代码可以调整音量值0-256，bgm源文件音量较小故调整为150，sfx暂未调整。
+    public void Volume100Theme()
+    {
+        audioSourceTheme.volume = 150;
+
+    }
+
     public void Volume100A()
     {
         audioSourceA.volume = 150;
@@ -152,10 +211,21 @@ public class ManagerAudio : MonoBehaviour
     {
         //audio test, load music first
 
+        audioSourceTheme = gameObject.AddComponent<AudioSource>();
+        audioSourceThemeV = gameObject.AddComponent<AudioSource>();
+
         audioSourceA = gameObject.AddComponent<AudioSource>();
         audioSourceB = gameObject.AddComponent<AudioSource>();
         audioSourceC = gameObject.AddComponent<AudioSource>();
         audioSourceSFX = gameObject.AddComponent<AudioSource>();
+
+
+        //audioSourceTheme.volume = 150;
+        //audioSourceA.volume = 150;
+        //audioSourceB.volume = 150;
+        //audioSourceC.volume = 150;
+        //audioSourceSFX.volume = 150;
+
 
         //缺省值，如果后续代码运行正常理论上不应该是这三个示范音乐
         string pathA = "Media/Sounds/BGM/PokemonDP/" + "201ばんどうろ（昼）";
@@ -189,102 +259,112 @@ public class ManagerAudio : MonoBehaviour
 
         int activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        if (prevSceneIndex != -1)
-        {
-            //ManagerAudio.Instance.PlayA(trackA);
-        }
-
-        if (prevSceneIndex != activeSceneIndex)
-        {
-            prevSceneIndex = activeSceneIndex;
-
-            int musicChoice = (prevSceneIndex % 5) + 1;//是因为目前只有5个loopBGM可切换。//注意序号应该从1开始因而+1
-            //int musicStatus = 1;//1,2,3 for gas, solid and liquid;
-            string pathA = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S1";
-            string pathB = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S2";
-            string pathC = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S3";
-            trackA = Resources.Load<AudioClip>(pathA);
-            trackB = Resources.Load<AudioClip>(pathB);
-            trackC = Resources.Load<AudioClip>(pathC);
-
-            
-        }
-        //轨道中
-        //A: Gas
-        //B: Solid
-        //C: Liquid
         
-        //int musicStatus = 0;
-        //int musicStatus = playerdata.pd.state;
-
-        int activeState = -2;
-        if (PlayerData.Pd.state == State.Gas)
+        //以下内容应该只对6个level有效。
+        if (activeSceneIndex <= 7 && activeSceneIndex >= 2)
         {
-            //print("1111");
-            activeState = 1;
-            
-        }
-        else if (PlayerData.Pd.state == State.Solid)
-        {
-            activeState = 2;
-            
-            //print("2222");
-        }
-        else
-        {
-            activeState = 3;
-            
-            //print("3333");
-        }
-
-
-
-        
-        if(prevState !=activeState)
-        {
-            if(prevState == -1)
+            if (prevSceneIndex != -1)
             {
-                ManagerAudio.Instance.PlayA(trackA);
-                ManagerAudio.Instance.PlayB(trackB);
-                ManagerAudio.Instance.PlayC(trackC);
+                //ManagerAudio.Instance.PlayA(trackA);
             }
-            
-            prevState = activeState;
-            ManagerAudio.Instance.Volume0();
-            
 
-            if (activeState == 1)
+            if (prevSceneIndex != activeSceneIndex)
             {
-                ManagerAudio.Instance.Volume100A();
+                prevSceneIndex = activeSceneIndex;
+
+                int musicChoice = ((prevSceneIndex-2) % 5) + 1;//是因为目前只有5个loopBGM可切换。//注意序号应该从1开始因而+1//6个leve的序号为2-7，所以先要-2
+                                                           //int musicStatus = 1;//1,2,3 for gas, solid and liquid;
+                print(musicChoice);
+                string pathA = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S1";
+                string pathB = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S2";
+                string pathC = "Media/Sounds/BGM/Levels/Morph Levels v1 P" + musicChoice + "S3";
+                trackA = Resources.Load<AudioClip>(pathA);
+                trackB = Resources.Load<AudioClip>(pathB);
+                trackC = Resources.Load<AudioClip>(pathC);
+
+
             }
-            else if (activeState == 2)
-            {
-                ManagerAudio.Instance.Volume100B();
-            }
-            else
-            {
-                ManagerAudio.Instance.Volume100C();
-            }
+            //轨道中
+            //A: Gas
+            //B: Solid
+            //C: Liquid
+
+            //int musicStatus = 0;
+            //int musicStatus = playerdata.pd.state;
+
+
             
+            int activeState = 1;
+            //int activeState = -2;
+            //if (PlayerData.Pd.state == State.Gas)
+            //{
+            //    //print("1111");
+            //    activeState = 1;
+
+            //}
+            //else if (PlayerData.Pd.state == State.Solid)
+            //{
+            //    activeState = 2;
+
+            //    //print("2222");
+            //}
+            //else
+            //{
+            //    activeState = 3;
+
+            //    //print("3333");
+            //}
+
+
+
+
+            if (prevState != activeState)
+            {
+                if (prevState == -1)
+                {
+                    ManagerAudio.Instance.PlayA(trackA);
+                    ManagerAudio.Instance.PlayB(trackB);
+                    ManagerAudio.Instance.PlayC(trackC);
+                }
+
+                prevState = activeState;
+                ManagerAudio.Instance.Volume0();
+
+
+                if (activeState == 1)
+                {
+                    ManagerAudio.Instance.Volume100A();
+                }
+                else if (activeState == 2)
+                {
+                    ManagerAudio.Instance.Volume100B();
+                }
+                else
+                {
+                    ManagerAudio.Instance.Volume100C();
+                }
+
+            }
         }
         
 
-        
-            
-
-         
-
-    
-    
-        
-        
-        
-    
-
-        
 
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
