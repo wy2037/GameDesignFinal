@@ -9,7 +9,8 @@ public class TitleLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ManagerAudio ma = ManagerAudio.Instance;
+        ma.PlayTheme();
     }
 
     // Update is called once per frame
@@ -18,8 +19,12 @@ public class TitleLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
 
-            Debug.Log($"{SceneManager.GetActiveScene().buildIndex}");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            //Debug.Log($"{SceneManager.GetActiveScene().buildIndex}");
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+            //SceneManager.LoadScene("World Map");
+            ManagerScene.Instance.GoToScene("World Map");
+            
         }
     }
 }
