@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform liquidTutorial;
     [SerializeField] private Transform obstacleTutorial;
     [SerializeField] private Transform gasTutorial;
+    [SerializeField] private Transform fanTutorial;
     [SerializeField] private Transform interactionTutorial;
 
     private float temperature = 70;
@@ -84,6 +85,9 @@ public class UIManager : MonoBehaviour
                 scalePageUp(gasTutorial);
                 break;
             case 4:
+                scalePageUp(fanTutorial);
+                break;
+            case 5:
                 scalePageUp(interactionTutorial);
                 break;
         }
