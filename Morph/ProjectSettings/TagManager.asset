@@ -50,3 +50,12 @@ TagManager:
   - name: Icon
     uniqueID: 1946532057
     locked: 0
+  - name: Spike
+    uniqueID: 3236815287
+    locked: 0
+  - name: Vent
+    uniqueID: 2843220205
+    locked: 0
+  - name: Fan
+    uniqueID: 633062887
+    locked: 0

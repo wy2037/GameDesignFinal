@@ -11,17 +11,23 @@ public class Glow : MonoBehaviour
 {
     public Type objectType;
     public State stateType;
+    [SerializeField] GameObject light2D;
+    [SerializeField] GameObject windZone;
     [SerializeField] float alphaValue;
     
     void Update() {
         if (objectType == Type.Hazard && PlayerData.Pd.state == stateType) {
-            gameObject.GetComponent<Renderer>().material.color = Color.red;
-            gameObject.GetComponent<Renderer>().material.color = new Vector4(1,0,0,1);
+            light2D.SetActive(true);
+            gameObject.GetComponent<Renderer>().material.color = new Vector4(1,1,1,1);
         } else if (objectType == Type.Interactable && PlayerData.Pd.state != stateType) {
-            gameObject.GetComponent<Renderer>().material.color = Color.green;
-            gameObject.GetComponent<Renderer>().material.color = new Vector4(0,1,0,1);
+            light2D.SetActive(true);
+            windZone.GetComponent<ParticleSystem>().Play();   
+            gameObject.GetComponent<Renderer>().material.color = new Vector4(1,1,1,1);        
         } else {
-            gameObject.GetComponent<Renderer>().material.color = Color.white;
+            light2D.SetActive(false);
+            if (objectType == Type.Interactable) {
+                windZone.GetComponent<ParticleSystem>().Stop();  
+            }
             gameObject.GetComponent<Renderer>().material.color = new Vector4(1,1,1,alphaValue);
         }
     }
