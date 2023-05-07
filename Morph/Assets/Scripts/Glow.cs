@@ -18,7 +18,7 @@ public class Glow : MonoBehaviour
     void Update() {
         if (objectType == Type.Hazard && PlayerData.Pd.state == stateType) {
             light2D.SetActive(true);
-            gameObject.GetComponent<Renderer>().material.color = new Vector4(1,1,1,1);
+            gameObject.GetComponent<Renderer>().material.color = new Vector4(1,0.5f,0.5f,1);
         } else if (objectType == Type.Interactable && PlayerData.Pd.state != stateType) {
             light2D.SetActive(true);
             windZone.GetComponent<ParticleSystem>().Play();   
