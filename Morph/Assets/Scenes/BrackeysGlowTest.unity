@@ -68061,9 +68061,9 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.8
+  m_FalloffIntensity: 0.75
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 50
+  m_Intensity: 15
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: b7e1edc0
@@ -68133,7 +68133,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 915346357}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.755, y: -3.054, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -88343,6 +88343,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 0
   stateType: 0
+  light2D: {fileID: 0}
+  windZone: {fileID: 0}
   alphaValue: 0.5
 --- !u!1 &1596698619
 GameObject:
@@ -89431,6 +89433,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 0
   stateType: 2
+  light2D: {fileID: 0}
+  windZone: {fileID: 0}
   alphaValue: 0.5
 --- !u!1 &1915512124
 GameObject:
@@ -89984,7 +89988,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.8
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 50
+  m_Intensity: 15
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: ed1878a9
@@ -90054,7 +90058,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2121254505}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.755, y: -3.054, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

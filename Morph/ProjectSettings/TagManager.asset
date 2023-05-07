@@ -56,3 +56,6 @@ TagManager:
   - name: Vent
     uniqueID: 2843220205
     locked: 0
+  - name: Fan
+    uniqueID: 633062887
+    locked: 0
