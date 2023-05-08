@@ -86,12 +86,14 @@ public class PlayerData : MonoBehaviour
             string curScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(curScene);
         }
+        /*
         else if (Input.GetKeyDown(KeyCode.Q)){
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
         else if (Input.GetKeyDown(KeyCode.Z)){
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
         }
+        */
     }
 
 }
