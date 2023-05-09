@@ -81,6 +81,8 @@ public class LevelEntry : MonoBehaviour
 
     }
     private IEnumerator loadNext(){
+        // audio
+        ManagerAudio.Instance.PlaySFX("end");
         // post processing
         StartCoroutine(GameFeelManager.Pm.levelEnd());
         // set player data
