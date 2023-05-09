@@ -258,6 +258,9 @@ public class PlayerController : MonoBehaviour
         isHorizontal = true;
         _rb.gravityScale = PlayerData.Pd.gravityScale;
 
+        // audio
+        ManagerAudio.Instance.PlaySFX("solid");
+
     }
     void liquidInit(){
         PlayerData.Pd.state = State.Liquid;
@@ -291,6 +294,9 @@ public class PlayerController : MonoBehaviour
         else if(previousState == State.Solid) StartCoroutine(liquidDrop2());
         
         previousState = State.Liquid;
+
+        // audio
+        ManagerAudio.Instance.PlaySFX("liquid");
     }
     void gasInit(){
         PlayerData.Pd.state = State.Gas;
@@ -318,6 +324,9 @@ public class PlayerController : MonoBehaviour
         _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         isHorizontal = true;
 
+        // audio
+        ManagerAudio.Instance.PlaySFX("gas");
+
     }
     void solidControl(){
         // initiate
@@ -338,6 +347,7 @@ public class PlayerController : MonoBehaviour
             _ani.SetTrigger("Jump");
             //Debug.Log("solid is grounded and gonna jump");
             _rb.velocity += new Vector2(0, PlayerData.Pd.jumpForce);
+            ManagerAudio.Instance.PlaySFX("jump");
             curJumpBufferTime = 0f;
         }
         if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y > 0f){
@@ -483,6 +493,7 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetKeyUp(KeyCode.Space) && _rb.velocity.y < 0f){
             _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
+            ManagerAudio.Instance.PlaySFX("jump");
             curCoyoteTime = 0f;
         }
 
@@ -624,6 +635,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public IEnumerator die(){
+        // audio
+        ManagerAudio.Instance.PlaySFX("death");
         //_player.GetComponent<PlayerController>().enabled = false;
         _rb.isKinematic = true;
         _rb.velocity = Vector2.zero;
