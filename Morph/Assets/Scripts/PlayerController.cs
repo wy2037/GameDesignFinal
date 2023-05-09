@@ -511,7 +511,7 @@ public class PlayerController : MonoBehaviour
         return isAttached;
     }
 
-    // check grounded using overlap box, the width of the box should based on the collider width
+    // check grounded using two raycast, the width of the box should based on the collider width
     bool checkGrounded(){
         // get the width of the collider
         float width = GetComponent<BoxCollider2D>().bounds.extents.x;
@@ -519,11 +519,11 @@ public class PlayerController : MonoBehaviour
         Vector2 leftPos = new Vector2(feet.position.x - width, feet.position.y);
         Vector2 rightPos = new Vector2(feet.position.x + width, feet.position.y);
         // check if the left or right edge is touching the ground
-        bool isGrounded = Physics2D.OverlapBox(leftPos, new Vector2(0.1f, 0.1f), 0f, groundLayer) || Physics2D.OverlapBox(rightPos, new Vector2(0.1f, 0.1f), 0f, groundLayer);
+        bool isGrounded = Physics2D.Raycast(leftPos, -transform.up, 0.05f, groundLayer) || Physics2D.Raycast(rightPos, -transform.up, 0.05f, groundLayer);
         return isGrounded;
     }
 
-    // check ceiling using overlap box, the width of the box should based on the collider width
+    // check ceiling using two raycast, the width of the box should based on the collider width
     bool checkCeiling(){
         // get the width of the collider
         float width = GetComponent<BoxCollider2D>().bounds.extents.x;
@@ -531,7 +531,7 @@ public class PlayerController : MonoBehaviour
         Vector2 leftPos = new Vector2(head.position.x - width, head.position.y);
         Vector2 rightPos = new Vector2(head.position.x + width, head.position.y);
         // check if the left or right edge is touching the ground
-        isCeiling = Physics2D.OverlapBox(leftPos, new Vector2(0.1f, 0.1f), 0f, groundLayer) || Physics2D.OverlapBox(rightPos, new Vector2(0.1f, 0.1f), 0f, groundLayer);
+        isCeiling = Physics2D.Raycast(leftPos, transform.up, 0.05f, groundLayer) || Physics2D.Raycast(rightPos, transform.up, 0.05f, groundLayer);
         return isCeiling;
     }
     Vector2 checkWall(){
