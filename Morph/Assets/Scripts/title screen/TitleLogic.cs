@@ -23,8 +23,8 @@ public class TitleLogic : MonoBehaviour
             //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 
             //SceneManager.LoadScene("World Map");
-            ManagerScene.Instance.GoToScene("World Map");
-            
+            //ManagerScene.Instance.GoToScene("World Map");
+            ManagerScene.Instance.GoToScene("Level 1");
         }
     }
 }
